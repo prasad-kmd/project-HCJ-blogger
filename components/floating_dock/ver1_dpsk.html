@@ -1,0 +1,514 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Floating Dock Component</title>
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+    />
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+        font-family: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI",
+          Roboto, Oxygen, Ubuntu, sans-serif;
+      }
+
+      body {
+        background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+        color: #333;
+        min-height: 100vh;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        padding: 20px;
+        transition: background 0.5s ease;
+      }
+
+      body.dark-mode {
+        background: linear-gradient(135deg, #232526 0%, #414345 100%);
+        color: #f0f0f0;
+      }
+
+      .container {
+        max-width: 1200px;
+        width: 100%;
+        text-align: center;
+      }
+
+      h1 {
+        font-size: 2.5rem;
+        margin-bottom: 1rem;
+        font-weight: 700;
+        background: linear-gradient(90deg, #6366f1, #8b5cf6);
+        -webkit-background-clip: text;
+        background-clip: text;
+        -webkit-text-fill-color: transparent;
+      }
+
+      .description {
+        font-size: 1.1rem;
+        margin-bottom: 3rem;
+        max-width: 600px;
+        margin-left: auto;
+        margin-right: auto;
+        line-height: 1.6;
+        color: #666;
+      }
+
+      .dark-mode .description {
+        color: #ccc;
+      }
+
+      .demo-container {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 35rem;
+        width: 100%;
+        margin-bottom: 3rem;
+      }
+
+      /* Floating Dock Styles */
+      .floating-dock {
+        position: relative;
+        z-index: 100;
+      }
+
+      .dock-desktop {
+        display: none;
+        margin: 0 auto;
+        height: 64px;
+        align-items: flex-end;
+        gap: 16px;
+        border-radius: 20px;
+        background-color: #f9fafb;
+        padding: 0 16px 12px;
+        box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1),
+          0 5px 10px rgba(0, 0, 0, 0.05);
+      }
+
+      .dark-mode .dock-desktop {
+        background-color: #262626;
+        box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3),
+          0 5px 10px rgba(0, 0, 0, 0.2);
+      }
+
+      .dock-mobile {
+        display: block;
+        position: relative;
+      }
+
+      .mobile-toggle {
+        display: flex;
+        height: 40px;
+        width: 40px;
+        align-items: center;
+        justify-content: center;
+        border-radius: 50%;
+        background-color: #f9fafb;
+        border: none;
+        cursor: pointer;
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+        z-index: 10;
+        position: relative;
+      }
+
+      .dark-mode .mobile-toggle {
+        background-color: #262626;
+      }
+
+      .mobile-items {
+        position: absolute;
+        bottom: 100%;
+        left: 0;
+        right: 0;
+        margin-bottom: 8px;
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+        align-items: center;
+        opacity: 0;
+        visibility: hidden;
+        transform: translateY(10px);
+        transition: all 0.3s ease;
+      }
+
+      .mobile-items.active {
+        opacity: 1;
+        visibility: visible;
+        transform: translateY(0);
+      }
+
+      .dock-item {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: 50%;
+        background-color: #f9fafb;
+        text-decoration: none;
+        transition: all 0.3s ease;
+        position: relative;
+      }
+
+      .dark-mode .dock-item {
+        background-color: #262626;
+      }
+
+      .mobile-items .dock-item {
+        height: 40px;
+        width: 40px;
+      }
+
+      .dock-desktop .dock-item {
+        height: 40px;
+        width: 40px;
+        background-color: #e5e7eb;
+      }
+
+      .dark-mode .dock-desktop .dock-item {
+        background-color: #404040;
+      }
+
+      .item-icon {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: #6b7280;
+        transition: all 0.3s ease;
+      }
+
+      .dark-mode .item-icon {
+        color: #d1d5db;
+      }
+
+      .dock-item:hover {
+        transform: scale(1.1);
+      }
+
+      .item-tooltip {
+        position: absolute;
+        top: -35px;
+        left: 50%;
+        transform: translateX(-50%);
+        background-color: #f3f4f6;
+        color: #374151;
+        padding: 4px 8px;
+        border-radius: 6px;
+        font-size: 12px;
+        white-space: nowrap;
+        opacity: 0;
+        visibility: hidden;
+        transition: all 0.3s ease;
+        border: 1px solid #e5e7eb;
+      }
+
+      .dark-mode .item-tooltip {
+        background-color: #404040;
+        color: #f3f4f6;
+        border: 1px solid #525252;
+      }
+
+      .dock-item:hover .item-tooltip {
+        opacity: 1;
+        visibility: visible;
+      }
+
+      .icon-img {
+        width: 20px;
+        height: 20px;
+        object-fit: contain;
+      }
+
+      .controls {
+        display: flex;
+        gap: 16px;
+        margin-top: 20px;
+        justify-content: center;
+        flex-wrap: wrap;
+      }
+
+      .control-btn {
+        padding: 10px 20px;
+        border-radius: 8px;
+        border: none;
+        background: linear-gradient(90deg, #6366f1, #8b5cf6);
+        color: white;
+        font-weight: 500;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        box-shadow: 0 4px 6px rgba(99, 102, 241, 0.3);
+      }
+
+      .control-btn:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 6px 12px rgba(99, 102, 241, 0.4);
+      }
+
+      @media (min-width: 768px) {
+        .dock-desktop {
+          display: flex;
+        }
+
+        .dock-mobile {
+          display: none;
+        }
+      }
+
+      /* Animation for desktop items */
+      @keyframes spring {
+        0% {
+          transform: scale(1);
+        }
+        50% {
+          transform: scale(1.2);
+        }
+        100% {
+          transform: scale(1);
+        }
+      }
+
+      .dock-item.spring-animation {
+        animation: spring 0.5s ease;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <h1>Floating Dock</h1>
+      <p class="description">
+        A responsive floating navigation dock with smooth animations. Works on
+        both desktop and mobile devices without any framework dependencies.
+      </p>
+
+      <div class="demo-container">
+        <div class="floating-dock">
+          <!-- Desktop Version -->
+          <div class="dock-desktop" id="desktopDock">
+            <!-- Items will be added via JavaScript -->
+          </div>
+
+          <!-- Mobile Version -->
+          <div class="dock-mobile">
+            <div class="mobile-items" id="mobileItems">
+              <!-- Items will be added via JavaScript -->
+            </div>
+            <button class="mobile-toggle" id="mobileToggle">
+              <i class="fas fa-bars"></i>
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <div class="controls">
+        <button class="control-btn" id="themeToggle">Toggle Dark Mode</button>
+        <button class="control-btn" id="addItem">Add Random Item</button>
+        <button class="control-btn" id="resetDock">Reset Dock</button>
+      </div>
+    </div>
+
+    <script>
+      document.addEventListener("DOMContentLoaded", function () {
+        // Dock items data
+        const dockItems = [
+          {
+            title: "Home",
+            icon: '<i class="fas fa-home"></i>',
+            href: "#",
+          },
+          {
+            title: "Products",
+            icon: '<i class="fas fa-box"></i>',
+            href: "#",
+          },
+          {
+            title: "Components",
+            icon: '<i class="fas fa-puzzle-piece"></i>',
+            href: "#",
+          },
+          {
+            title: "Settings",
+            icon: '<i class="fas fa-cog"></i>',
+            href: "#",
+          },
+          {
+            title: "Aceternity UI",
+            icon: '<img src="https://assets.aceternity.com/logo-dark.png" class="icon-img" alt="Aceternity Logo">',
+            href: "#",
+          },
+          {
+            title: "Changelog",
+            icon: '<i class="fas fa-exchange-alt"></i>',
+            href: "#",
+          },
+          {
+            title: "Twitter",
+            icon: '<i class="fab fa-twitter"></i>',
+            href: "#",
+          },
+          {
+            title: "GitHub",
+            icon: '<i class="fab fa-github"></i>',
+            href: "#",
+          },
+        ];
+
+        // DOM elements
+        const desktopDock = document.getElementById("desktopDock");
+        const mobileItems = document.getElementById("mobileItems");
+        const mobileToggle = document.getElementById("mobileToggle");
+        const themeToggle = document.getElementById("themeToggle");
+        const addItemBtn = document.getElementById("addItem");
+        const resetBtn = document.getElementById("resetDock");
+        const body = document.body;
+
+        // Initialize the dock
+        function initializeDock() {
+          // Clear existing items
+          desktopDock.innerHTML = "";
+          mobileItems.innerHTML = "";
+
+          // Add items to desktop dock
+          dockItems.forEach((item) => {
+            const dockItem = createDockItem(item);
+            desktopDock.appendChild(dockItem);
+          });
+
+          // Add items to mobile dock
+          dockItems.forEach((item) => {
+            const mobileItem = createDockItem(item);
+            mobileItems.appendChild(mobileItem);
+          });
+
+          // Initialize desktop dock animation
+          initDesktopDockAnimation();
+        }
+
+        // Create a dock item element
+        function createDockItem(item) {
+          const itemEl = document.createElement("a");
+          itemEl.href = item.href;
+          itemEl.className = "dock-item";
+          itemEl.innerHTML = `
+                    <div class="item-icon">${item.icon}</div>
+                    <span class="item-tooltip">${item.title}</span>
+                `;
+          return itemEl;
+        }
+
+        // Initialize desktop dock animation
+        function initDesktopDockAnimation() {
+          const items = desktopDock.querySelectorAll(".dock-item");
+
+          desktopDock.addEventListener("mousemove", function (e) {
+            const mouseX = e.pageX;
+
+            items.forEach((item) => {
+              const rect = item.getBoundingClientRect();
+              const itemCenter = rect.left + rect.width / 2;
+              const distance = Math.abs(mouseX - itemCenter);
+
+              // Scale based on distance from mouse
+              let scale = 1;
+              if (distance < 100) {
+                scale = 1.4 - (distance / 100) * 0.4;
+              }
+
+              item.style.transform = `scale(${scale})`;
+
+              // Adjust icon size
+              const icon = item.querySelector(".item-icon");
+              let iconScale = 1;
+              if (distance < 100) {
+                iconScale = 1.8 - (distance / 100) * 0.8;
+              }
+              icon.style.transform = `scale(${iconScale})`;
+            });
+          });
+
+          desktopDock.addEventListener("mouseleave", function () {
+            items.forEach((item) => {
+              item.style.transform = "scale(1)";
+              const icon = item.querySelector(".item-icon");
+              icon.style.transform = "scale(1)";
+            });
+          });
+        }
+
+        // Toggle mobile menu
+        mobileToggle.addEventListener("click", function () {
+          mobileItems.classList.toggle("active");
+
+          // Change icon based on state
+          const icon = mobileToggle.querySelector("i");
+          if (mobileItems.classList.contains("active")) {
+            icon.className = "fas fa-times";
+          } else {
+            icon.className = "fas fa-bars";
+          }
+        });
+
+        // Toggle dark mode
+        themeToggle.addEventListener("click", function () {
+          body.classList.toggle("dark-mode");
+
+          // Update button text
+          if (body.classList.contains("dark-mode")) {
+            themeToggle.textContent = "Toggle Light Mode";
+          } else {
+            themeToggle.textContent = "Toggle Dark Mode";
+          }
+        });
+
+        // Add random item to dock
+        addItemBtn.addEventListener("click", function () {
+          const randomIcons = [
+            { icon: '<i class="fas fa-star"></i>', title: "Favorite" },
+            { icon: '<i class="fas fa-envelope"></i>', title: "Messages" },
+            { icon: '<i class="fas fa-user"></i>', title: "Profile" },
+            { icon: '<i class="fas fa-shopping-cart"></i>', title: "Cart" },
+            { icon: '<i class="fas fa-bell"></i>', title: "Notifications" },
+          ];
+
+          const randomItem =
+            randomIcons[Math.floor(Math.random() * randomIcons.length)];
+          const newItem = {
+            title: randomItem.title,
+            icon: randomItem.icon,
+            href: "#",
+          };
+
+          dockItems.push(newItem);
+
+          // Add to desktop dock
+          const desktopItem = createDockItem(newItem);
+          desktopDock.appendChild(desktopItem);
+
+          // Add to mobile dock
+          const mobileItem = createDockItem(newItem);
+          mobileItems.appendChild(mobileItem);
+
+          // Reinitialize animation to include new items
+          initDesktopDockAnimation();
+        });
+
+        // Reset dock to initial state
+        resetBtn.addEventListener("click", function () {
+          // Remove all but the original items
+          while (dockItems.length > 8) {
+            dockItems.pop();
+          }
+
+          initializeDock();
+        });
+
+        // Initialize the dock on load
+        initializeDock();
+      });
+    </script>
+  </body>
+</html>

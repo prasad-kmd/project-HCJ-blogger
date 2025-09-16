@@ -1,0 +1,560 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Floating Dock</title>
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+    />
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+        font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+      }
+
+      body {
+        background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+        color: #333;
+        min-height: 100vh;
+        transition: background 0.5s ease;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        padding: 20px;
+      }
+
+      body.dark-mode {
+        background: linear-gradient(135deg, #232526 0%, #414345 100%);
+        color: #f0f0f0;
+      }
+
+      .container {
+        max-width: 1200px;
+        width: 100%;
+        text-align: center;
+        padding: 20px;
+      }
+
+      h1 {
+        font-size: 2.8rem;
+        margin-bottom: 1.5rem;
+        font-weight: 800;
+        background: linear-gradient(90deg, #6366f1, #8b5cf6);
+        -webkit-background-clip: text;
+        background-clip: text;
+        -webkit-text-fill-color: transparent;
+        text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+      }
+
+      .description {
+        font-size: 1.2rem;
+        margin-bottom: 3rem;
+        max-width: 700px;
+        margin-left: auto;
+        margin-right: auto;
+        line-height: 1.6;
+        color: #666;
+      }
+
+      .dark-mode .description {
+        color: #ccc;
+      }
+
+      /* Floating Dock Styles */
+      .floating-dock {
+        position: fixed;
+        bottom: 25px;
+        left: 50%;
+        transform: translateX(-50%);
+        z-index: 1000;
+        transition: all 0.3s ease;
+      }
+
+      .dock-desktop {
+        display: flex;
+        height: 70px;
+        align-items: flex-end;
+        gap: 18px;
+        border-radius: 24px;
+        background-color: rgba(249, 250, 251, 0.92);
+        backdrop-filter: blur(12px);
+        padding: 0 20px 15px;
+        box-shadow: 0 12px 30px rgba(0, 0, 0, 0.15),
+          0 6px 12px rgba(0, 0, 0, 0.1);
+        border: 1px solid rgba(255, 255, 255, 0.7);
+      }
+
+      .dark-mode .dock-desktop {
+        background-color: rgba(38, 38, 38, 0.92);
+        box-shadow: 0 12px 30px rgba(0, 0, 0, 0.35),
+          0 6px 12px rgba(0, 0, 0, 0.25);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+      }
+
+      .dock-mobile {
+        display: none;
+        position: relative;
+      }
+
+      .dock-item {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        height: 46px;
+        width: 46px;
+        border-radius: 50%;
+        background: linear-gradient(135deg, #e6e9f0 0%, #eef1f5 100%);
+        text-decoration: none;
+        transition: all 0.3s cubic-bezier(0.68, -0.55, 0.27, 1.55);
+        position: relative;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+      }
+
+      .dark-mode .dock-item {
+        background: linear-gradient(135deg, #404040 0%, #4a4a4a 100%);
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+      }
+
+      .item-icon {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: #6b7280;
+        transition: all 0.3s ease;
+        font-size: 1.1rem;
+      }
+
+      .dark-mode .item-icon {
+        color: #d1d5db;
+      }
+
+      .dock-item:hover {
+        transform: translateY(-8px) scale(1.15);
+        box-shadow: 0 8px 16px rgba(0, 0, 0, 0.15);
+      }
+
+      .dark-mode .dock-item:hover {
+        box-shadow: 0 8px 16px rgba(0, 0, 0, 0.4);
+      }
+
+      .item-tooltip {
+        position: absolute;
+        top: -42px;
+        left: 50%;
+        transform: translateX(-50%);
+        background-color: #f3f4f6;
+        color: #374151;
+        padding: 6px 12px;
+        border-radius: 8px;
+        font-size: 13px;
+        font-weight: 500;
+        white-space: nowrap;
+        opacity: 0;
+        visibility: hidden;
+        transition: all 0.3s ease;
+        border: 1px solid #e5e7eb;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+      }
+
+      .dark-mode .item-tooltip {
+        background-color: #404040;
+        color: #f3f4f6;
+        border: 1px solid #525252;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
+      }
+
+      .dock-item:hover .item-tooltip {
+        opacity: 1;
+        visibility: visible;
+        transform: translateX(-50%) translateY(-5px);
+      }
+
+      .icon-img {
+        width: 22px;
+        height: 22px;
+        object-fit: contain;
+      }
+
+      .theme-toggle {
+        position: fixed;
+        top: 25px;
+        right: 25px;
+        z-index: 1000;
+      }
+
+      .theme-btn {
+        padding: 12px 20px;
+        border-radius: 10px;
+        border: none;
+        background: linear-gradient(90deg, #6366f1, #8b5cf6);
+        color: white;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        box-shadow: 0 6px 12px rgba(99, 102, 241, 0.3);
+        display: flex;
+        align-items: center;
+        gap: 10px;
+      }
+
+      .theme-btn:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 8px 16px rgba(99, 102, 241, 0.4);
+      }
+
+      .theme-btn:active {
+        transform: translateY(0);
+      }
+
+      .content-box {
+        background: rgba(255, 255, 255, 0.8);
+        backdrop-filter: blur(10px);
+        border-radius: 20px;
+        padding: 30px;
+        margin: 30px auto;
+        max-width: 800px;
+        box-shadow: 0 10px 25px rgba(0, 0, 0, 0.08);
+        border: 1px solid rgba(255, 255, 255, 0.5);
+      }
+
+      .dark-mode .content-box {
+        background: rgba(38, 38, 38, 0.8);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        box-shadow: 0 10px 25px rgba(0, 0, 0, 0.25);
+      }
+
+      .content-box h2 {
+        margin-bottom: 20px;
+        color: #6366f1;
+      }
+
+      .dark-mode .content-box h2 {
+        color: #8b5cf6;
+      }
+
+      .content-box p {
+        margin-bottom: 15px;
+        line-height: 1.6;
+      }
+
+      @media (max-width: 768px) {
+        .dock-desktop {
+          display: none;
+        }
+
+        .dock-mobile {
+          display: block;
+        }
+
+        .mobile-toggle {
+          display: flex;
+          height: 60px;
+          width: 60px;
+          align-items: center;
+          justify-content: center;
+          border-radius: 50%;
+          background-color: rgba(249, 250, 251, 0.95);
+          backdrop-filter: blur(12px);
+          border: none;
+          cursor: pointer;
+          box-shadow: 0 6px 15px rgba(0, 0, 0, 0.15);
+          z-index: 10;
+          position: relative;
+          transition: all 0.3s ease;
+        }
+
+        .dark-mode .mobile-toggle {
+          background-color: rgba(38, 38, 38, 0.95);
+          box-shadow: 0 6px 15px rgba(0, 0, 0, 0.3);
+        }
+
+        .mobile-toggle:hover {
+          transform: scale(1.1);
+        }
+
+        .mobile-items {
+          position: absolute;
+          bottom: 100%;
+          left: 0;
+          right: 0;
+          margin-bottom: 20px;
+          display: flex;
+          flex-direction: column;
+          gap: 15px;
+          align-items: center;
+          opacity: 0;
+          visibility: hidden;
+          transform: translateY(15px);
+          transition: all 0.3s cubic-bezier(0.68, -0.55, 0.27, 1.55);
+        }
+
+        .mobile-items.active {
+          opacity: 1;
+          visibility: visible;
+          transform: translateY(0);
+        }
+
+        .mobile-items .dock-item {
+          height: 50px;
+          width: 50px;
+        }
+
+        h1 {
+          font-size: 2.2rem;
+        }
+
+        .description {
+          font-size: 1.1rem;
+        }
+      }
+
+      footer {
+        margin-top: 40px;
+        color: #6b7280;
+        font-size: 0.9rem;
+      }
+
+      .dark-mode footer {
+        color: #9ca3af;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="theme-toggle">
+      <button class="theme-btn" id="themeToggle">
+        <i class="fas fa-moon"></i> Dark Mode
+      </button>
+    </div>
+
+    <div class="container">
+      <h1>Floating Navigation Dock</h1>
+      <p class="description">
+        A sleek, responsive floating dock with smooth animations and dark/light
+        mode. Perfect for modern web applications.
+      </p>
+
+      <div class="content-box">
+        <h2>About This Component</h2>
+        <p>
+          This floating dock provides a clean navigation solution that stays
+          accessible at the bottom of your screen.
+        </p>
+        <p>
+          Hover over the items to see them expand with smooth animations and
+          display helpful tooltips.
+        </p>
+        <p>
+          Toggle between dark and light mode using the button in the top right
+          corner.
+        </p>
+      </div>
+
+      <div class="content-box">
+        <h2>Features</h2>
+        <p>• Responsive design that works on all devices</p>
+        <p>• Smooth animations and transitions</p>
+        <p>• Dark/light mode with persistent setting</p>
+        <p>• Clean, modern design with glassmorphism effects</p>
+        <p>• Easy to customize and extend</p>
+      </div>
+
+      <footer>
+        <p>
+          Created with pure HTML, CSS, and JavaScript • No frameworks required
+        </p>
+      </footer>
+    </div>
+
+    <div class="floating-dock">
+      <!-- Desktop Version -->
+      <div class="dock-desktop" id="desktopDock">
+        <!-- Items will be added via JavaScript -->
+      </div>
+
+      <!-- Mobile Version -->
+      <div class="dock-mobile">
+        <div class="mobile-items" id="mobileItems">
+          <!-- Items will be added via JavaScript -->
+        </div>
+        <button class="mobile-toggle" id="mobileToggle">
+          <i class="fas fa-bars"></i>
+        </button>
+      </div>
+    </div>
+
+    <script>
+      document.addEventListener("DOMContentLoaded", function () {
+        // Dock items data
+        const dockItems = [
+          {
+            title: "Home",
+            icon: '<i class="fas fa-home"></i>',
+            href: "#",
+          },
+          {
+            title: "Products",
+            icon: '<i class="fas fa-box"></i>',
+            href: "#",
+          },
+          {
+            title: "Components",
+            icon: '<i class="fas fa-puzzle-piece"></i>',
+            href: "#",
+          },
+          {
+            title: "Settings",
+            icon: '<i class="fas fa-cog"></i>',
+            href: "#",
+          },
+          {
+            title: "Aceternity UI",
+            icon: '<img src="https://assets.aceternity.com/logo-dark.png" class="icon-img" alt="Aceternity Logo">',
+            href: "#",
+          },
+          {
+            title: "GitHub",
+            icon: '<i class="fab fa-github"></i>',
+            href: "#",
+          },
+        ];
+
+        // DOM elements
+        const desktopDock = document.getElementById("desktopDock");
+        const mobileItems = document.getElementById("mobileItems");
+        const mobileToggle = document.getElementById("mobileToggle");
+        const themeToggle = document.getElementById("themeToggle");
+        const body = document.body;
+
+        // Check for saved theme preference or respect OS preference
+        if (
+          localStorage.getItem("theme") === "dark" ||
+          (window.matchMedia("(prefers-color-scheme: dark)").matches &&
+            !localStorage.getItem("theme"))
+        ) {
+          body.classList.add("dark-mode");
+          updateThemeButton();
+        }
+
+        // Initialize the dock
+        function initializeDock() {
+          // Clear existing items
+          desktopDock.innerHTML = "";
+          mobileItems.innerHTML = "";
+
+          // Add items to desktop dock
+          dockItems.forEach((item) => {
+            const dockItem = createDockItem(item);
+            desktopDock.appendChild(dockItem);
+          });
+
+          // Add items to mobile dock
+          dockItems.forEach((item) => {
+            const mobileItem = createDockItem(item);
+            mobileItems.appendChild(mobileItem);
+          });
+
+          // Initialize desktop dock animation
+          initDesktopDockAnimation();
+        }
+
+        // Create a dock item element
+        function createDockItem(item) {
+          const itemEl = document.createElement("a");
+          itemEl.href = item.href;
+          itemEl.className = "dock-item";
+          itemEl.innerHTML = `
+                    <div class="item-icon">${item.icon}</div>
+                    <span class="item-tooltip">${item.title}</span>
+                `;
+          return itemEl;
+        }
+
+        // Initialize desktop dock animation
+        function initDesktopDockAnimation() {
+          const items = desktopDock.querySelectorAll(".dock-item");
+
+          desktopDock.addEventListener("mousemove", function (e) {
+            const mouseX = e.pageX;
+
+            items.forEach((item) => {
+              const rect = item.getBoundingClientRect();
+              const itemCenter = rect.left + rect.width / 2;
+              const distance = Math.abs(mouseX - itemCenter);
+
+              // Scale based on distance from mouse
+              let scale = 1;
+              if (distance < 100) {
+                scale = 1.4 - (distance / 100) * 0.4;
+              }
+
+              item.style.transform = `translateY(-8px) scale(${scale})`;
+
+              // Adjust icon size
+              const icon = item.querySelector(".item-icon");
+              let iconScale = 1;
+              if (distance < 100) {
+                iconScale = 1.8 - (distance / 100) * 0.8;
+              }
+              icon.style.transform = `scale(${iconScale})`;
+            });
+          });
+
+          desktopDock.addEventListener("mouseleave", function () {
+            items.forEach((item) => {
+              item.style.transform = "scale(1)";
+              const icon = item.querySelector(".item-icon");
+              icon.style.transform = "scale(1)";
+            });
+          });
+        }
+
+        // Toggle mobile menu
+        mobileToggle.addEventListener("click", function () {
+          mobileItems.classList.toggle("active");
+
+          // Change icon based on state
+          const icon = mobileToggle.querySelector("i");
+          if (mobileItems.classList.contains("active")) {
+            icon.className = "fas fa-times";
+            mobileToggle.style.transform = "scale(1.1)";
+          } else {
+            icon.className = "fas fa-bars";
+            mobileToggle.style.transform = "scale(1)";
+          }
+        });
+
+        // Update theme button text and icon
+        function updateThemeButton() {
+          const icon = themeToggle.querySelector("i");
+          if (body.classList.contains("dark-mode")) {
+            themeToggle.innerHTML = '<i class="fas fa-sun"></i> Light Mode';
+          } else {
+            themeToggle.innerHTML = '<i class="fas fa-moon"></i> Dark Mode';
+          }
+        }
+
+        // Toggle dark mode
+        themeToggle.addEventListener("click", function () {
+          body.classList.toggle("dark-mode");
+
+          // Save theme preference
+          if (body.classList.contains("dark-mode")) {
+            localStorage.setItem("theme", "dark");
+          } else {
+            localStorage.setItem("theme", "light");
+          }
+
+          updateThemeButton();
+        });
+
+        // Initialize the dock on load
+        initializeDock();
+      });
+    </script>
+  </body>
+</html>

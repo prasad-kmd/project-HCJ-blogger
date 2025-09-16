@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Floating Dock</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      body {
+        font-family: "Inter", sans-serif;
+        background-color: #1a1a1a;
+        color: #f5f5f5;
+      }
+
+      .dock-container {
+        position: fixed;
+        bottom: 2rem;
+        left: 50%;
+        transform: translateX(-50%);
+        display: flex;
+        justify-content: center;
+        align-items: flex-end;
+        padding-bottom: 0.75rem;
+      }
+
+      .dock-item-container {
+        width: 4rem; /* Initial size */
+        height: 4rem; /* Initial size */
+        transition: width 0.3s ease, height 0.3s ease, transform 0.3s ease;
+        position: relative;
+      }
+
+      .dock-item-container.hovered {
+        width: 5rem;
+        height: 5rem;
+        transform: translateY(-0.5rem);
+      }
+
+      .dock-item {
+        width: 100%;
+        height: 100%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: 9999px;
+        background-color: rgba(30, 41, 59, 0.8);
+        backdrop-filter: blur(10px);
+        border: 1px solid rgba(49, 68, 91, 0.5);
+        transition: all 0.3s ease;
+      }
+
+      .dock-icon {
+        width: 2rem;
+        height: 2rem;
+        transition: all 0.3s ease;
+      }
+
+      .dock-item-container.hovered .dock-icon {
+        width: 3rem;
+        height: 3rem;
+      }
+
+      .dock-item-container:not(.hovered) .tooltip {
+        visibility: hidden;
+        opacity: 0;
+        transform: translateY(10px);
+      }
+
+      .tooltip {
+        position: absolute;
+        bottom: calc(100% + 10px);
+        left: 50%;
+        transform: translateX(-50%);
+        background-color: rgba(255, 255, 255, 0.1);
+        color: #f5f5f5;
+        padding: 0.25rem 0.75rem;
+        border-radius: 0.5rem;
+        font-size: 0.75rem;
+        white-space: nowrap;
+        transition: all 0.3s ease;
+        pointer-events: none;
+        z-index: 10;
+      }
+
+      .tooltip::after {
+        content: "";
+        position: absolute;
+        left: 50%;
+        transform: translateX(-50%);
+        bottom: -5px;
+        width: 0;
+        height: 0;
+        border-left: 5px solid transparent;
+        border-right: 5px solid transparent;
+        border-top: 5px solid rgba(255, 255, 255, 0.1);
+      }
+
+      .tabler-icon {
+        stroke: #ccc;
+        stroke-width: 1.5;
+        fill: none;
+      }
+    </style>
+  </head>
+  <body
+    class="bg-gray-900 text-white min-h-screen flex items-center justify-center flex-col"
+  >
+    <div class="text-center p-8">
+      <h1 class="text-4xl font-bold mb-4">Floating Dock</h1>
+      <p class="text-xl">Hover over the icons to see the effect.</p>
+    </div>
+
+    <div id="dock" class="dock-container"></div>
+
+    <script>
+      // Data for the dock items
+      const links = [
+        {
+          title: "Home",
+          icon: `<svg xmlns="http://www.w3.org/2000/svg" class="tabler-icon icon-tabler-home" width="24" height="24" viewBox="0 0 24 24" stroke-width="1.5" stroke="#ccc" fill="none" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M0 0h24v24H0z" stroke="none"/>
+                    <path d="M5 12h14M12 5l7 7-7 7M12 5v14"/>
+                </svg>`,
+          href: "#",
+        },
+        {
+          title: "Products",
+          icon: `<svg xmlns="http://www.w3.org/2000/svg" class="tabler-icon icon-tabler-terminal-2" width="24" height="24" viewBox="0 0 24 24" stroke-width="1.5" stroke="#ccc" fill="none" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M0 0h24v24H0z" stroke="none"/>
+                    <path d="M8 9l3 3-3 3"/>
+                    <path d="M13 15h3"/>
+                    <path d="M3 4a1 1 0 011-1h16a1 1 0 011 1v16a1 1 0 01-1 1H4a1 1 0 01-1-1V4z"/>
+                </svg>`,
+          href: "#",
+        },
+        {
+          title: "Components",
+          icon: `<svg xmlns="http://www.w3.org/2000/svg" class="tabler-icon icon-tabler-new-section" width="24" height="24" viewBox="0 0 24 24" stroke-width="1.5" stroke="#ccc" fill="none" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M0 0h24v24H0z" stroke="none"/>
+                    <path d="M12 20h9"/>
+                    <path d="M12 10h9"/>
+                    <path d="M12 4h9"/>
+                    <path d="M12 17h9"/>
+                    <path d="M12 7h9"/>
+                    <path d="M12 14h9"/>
+                    <path d="M3 12h9M12 3v18"/>
+                </svg>`,
+          href: "#",
+        },
+        {
+          title: "Changelog",
+          icon: `<svg xmlns="http://www.w3.org/2000/svg" class="tabler-icon icon-tabler-exchange" width="24" height="24" viewBox="0 0 24 24" stroke-width="1.5" stroke="#ccc" fill="none" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M0 0h24v24H0z" stroke="none"/>
+                    <path d="M5 18h14M12 5l7 7-7 7M12 5v14"/>
+                </svg>`,
+          href: "#",
+        },
+        {
+          title: "Github",
+          icon: `<svg xmlns="http://www.w3.org/2000/svg" class="tabler-icon icon-tabler-brand-github" width="24" height="24" viewBox="0 0 24 24" stroke-width="1.5" stroke="#ccc" fill="none" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M0 0h24v24H0z" stroke="none"/>
+                    <path d="M9 19c-4.3 1.4-4.3-2.5-6-3m12 5v-3.5c0-1 .4-2 1.2-2.7a5 5 0 013.7-1.2m-12.2-4.2a3.5 3.5 0 10-3.5 3.5v1.5a3.5 3.5 0 103.5-3.5m0-4.5a3.5 3.5 0 10-3.5 3.5v1.5a3.5 3.5 0 103.5-3.5m0 0v-4m0-4a3.5 3.5 0 10-3.5 3.5v1.5a3.5 3.5 0 103.5-3.5"/>
+                </svg>`,
+          href: "#",
+        },
+      ];
+
+      document.addEventListener("DOMContentLoaded", () => {
+        const dock = document.getElementById("dock");
+
+        links.forEach((link) => {
+          const itemContainer = document.createElement("div");
+          itemContainer.className = "dock-item-container";
+
+          const item = document.createElement("a");
+          item.href = link.href;
+          item.className = "dock-item";
+
+          const tooltip = document.createElement("span");
+          tooltip.className = "tooltip";
+          tooltip.textContent = link.title;
+
+          const iconDiv = document.createElement("div");
+          iconDiv.className = "dock-icon";
+          iconDiv.innerHTML = link.icon;
+
+          item.appendChild(iconDiv);
+          itemContainer.appendChild(item);
+          itemContainer.appendChild(tooltip);
+          dock.appendChild(itemContainer);
+
+          itemContainer.addEventListener("mouseenter", () => {
+            itemContainer.classList.add("hovered");
+          });
+
+          itemContainer.addEventListener("mouseleave", () => {
+            itemContainer.classList.remove("hovered");
+          });
+        });
+      });
+    </script>
+  </body>
+</html>
