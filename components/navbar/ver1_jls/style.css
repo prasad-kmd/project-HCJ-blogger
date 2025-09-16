@@ -47,20 +47,21 @@ body {
   background: none;
   border: none;
   cursor: pointer;
-  padding: 0;
-  width: 24px;
-  height: 24px;
+  padding: 10px;
+  width: 44px;
+  height: 44px;
   display: flex;
-  flex-direction: column;
-  justify-content: space-around;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  z-index: 10;
 }
 
 .hamburger {
   display: block;
-  width: 100%;
+  width: 24px;
   height: 2px;
-  background-color: var(--text-color);
-  transition: transform 0.3s, opacity 0.3s;
+  background-color: transparent;
   position: relative;
 }
 
@@ -68,35 +69,75 @@ body {
 .hamburger::after {
   content: "";
   position: absolute;
+  left: 0;
   width: 100%;
   height: 2px;
   background-color: var(--text-color);
-  transition: transform 0.3s;
+  transition: transform 0.3s ease-in-out;
 }
 
 .hamburger::before {
-  transform: translateY(-8px);
+  transform: translateY(-5px);
 }
 
 .hamburger::after {
-  transform: translateY(8px);
-}
-
-.navbar.menu-open .hamburger {
-  background-color: transparent;
+  transform: translateY(5px);
 }
 
 .navbar.menu-open .hamburger::before {
-  transform: rotate(45deg);
+  transform: translateY(0) rotate(45deg);
 }
 
 .navbar.menu-open .hamburger::after {
-  transform: rotate(-45deg);
+  transform: translateY(0) rotate(-45deg);
 }
 
 .navbar-brand {
   font-size: 1.5rem;
   font-weight: bold;
+}
+
+.navbar-actions {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+#theme-switcher {
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  width: 44px;
+  height: 44px;
+  padding: 0;
+  position: relative;
+  color: var(--text-color);
+}
+
+#theme-switcher::before,
+#theme-switcher::after {
+  font-size: 24px;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  transition: opacity 0.3s, transform 0.3s;
+}
+
+#theme-switcher::before {
+  content: "☀️";
+  opacity: 0;
+}
+[data-theme="dark"] #theme-switcher::before {
+  opacity: 1;
+}
+
+#theme-switcher::after {
+  content: "🌙";
+  opacity: 1;
+}
+[data-theme="dark"] #theme-switcher::after {
+  opacity: 0;
 }
 
 .get-started {
@@ -167,19 +208,27 @@ body {
   color: var(--card-text-color);
   text-decoration: none;
   opacity: 0.8;
+  position: relative;
+  padding-bottom: 3px;
 }
 
 .menu-card a:hover {
   opacity: 1;
 }
 
-.theme-switcher-container {
-  position: fixed;
-  bottom: 20px;
-  right: 20px;
+.menu-card a::after {
+  content: "";
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  height: 1px;
+  background-color: var(--card-text-color);
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform 0.3s ease-in-out;
 }
 
-#theme-switcher {
-  padding: 0.5rem 1rem;
-  cursor: pointer;
+.menu-card a:hover::after {
+  transform: scaleX(1);
 }
