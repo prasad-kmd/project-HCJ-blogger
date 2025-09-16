@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+    <link rel="stylesheet" href="style.css">
+    <script src="script.js" type="module"></script>
+  </head>
+  <body>
+    <div class="card-nav-container">
+      <nav
+        class="card-nav"
+        style="
+          background-color: rgb(255, 255, 255);
+          overflow: hidden;
+          height: 60px;
+        "
+      >
+        <div class="card-nav-top">
+          <div
+            class="hamburger-menu"
+            role="button"
+            aria-label="Open menu"
+            tabindex="0"
+            style="color: rgb(0, 0, 0)"
+          >
+            <div class="hamburger-line"></div>
+            <div class="hamburger-line"></div>
+          </div>
+          <div class="logo-container">
+            <img
+              alt="Logo"
+              class="logo"
+              src="/assets/reactbits-gh-black-DunjjUqG.svg"
+            />
+          </div>
+          <button
+            type="button"
+            class="card-nav-cta-button"
+            style="background-color: rgb(17, 17, 17); color: rgb(255, 255, 255)"
+          >
+            Get Started
+          </button>
+        </div>
+        <div class="card-nav-content" aria-hidden="true">
+          <div
+            class="nav-card"
+            style="
+              background-color: rgb(13, 7, 22);
+              color: rgb(255, 255, 255);
+              translate: none;
+              rotate: none;
+              scale: none;
+              opacity: 0;
+              transform: translate(0px, 50px);
+            "
+          >
+            <div class="nav-card-label">About</div>
+            <div class="nav-card-links">
+              <a class="nav-card-link" aria-label="About Company"
+                ><svg
+                  stroke="currentColor"
+                  fill="currentColor"
+                  stroke-width="0"
+                  viewBox="0 0 24 24"
+                  class="nav-card-link-icon"
+                  aria-hidden="true"
+                  height="1em"
+                  width="1em"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <path
+                    d="M18.25 15.5a.75.75 0 0 1-.75-.75V7.56L7.28 17.78a.749.749 0 0 1-1.275-.326.749.749 0 0 1 .215-.734L16.44 6.5H9.25a.75.75 0 0 1 0-1.5h9a.75.75 0 0 1 .75.75v9a.75.75 0 0 1-.75.75Z"
+                  ></path></svg
+                >Company</a
+              ><a class="nav-card-link" aria-label="About Careers"
+                ><svg
+                  stroke="currentColor"
+                  fill="currentColor"
+                  stroke-width="0"
+                  viewBox="0 0 24 24"
+                  class="nav-card-link-icon"
+                  aria-hidden="true"
+                  height="1em"
+                  width="1em"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <path
+                    d="M18.25 15.5a.75.75 0 0 1-.75-.75V7.56L7.28 17.78a.749.749 0 0 1-1.275-.326.749.749 0 0 1 .215-.734L16.44 6.5H9.25a.75.75 0 0 1 0-1.5h9a.75.75 0 0 1 .75.75v9a.75.75 0 0 1-.75.75Z"
+                  ></path></svg
+                >Careers</a
+              >
+            </div>
+          </div>
+          <div
+            class="nav-card"
+            style="
+              background-color: rgb(23, 13, 39);
+              color: rgb(255, 255, 255);
+              translate: none;
+              rotate: none;
+              scale: none;
+              opacity: 0;
+              transform: translate(0px, 50px);
+            "
+          >
+            <div class="nav-card-label">Projects</div>
+            <div class="nav-card-links">
+              <a class="nav-card-link" aria-label="Featured Projects"
+                ><svg
+                  stroke="currentColor"
+                  fill="currentColor"
+                  stroke-width="0"
+                  viewBox="0 0 24 24"
+                  class="nav-card-link-icon"
+                  aria-hidden="true"
+                  height="1em"
+                  width="1em"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <path
+                    d="M18.25 15.5a.75.75 0 0 1-.75-.75V7.56L7.28 17.78a.749.749 0 0 1-1.275-.326.749.749 0 0 1 .215-.734L16.44 6.5H9.25a.75.75 0 0 1 0-1.5h9a.75.75 0 0 1 .75.75v9a.75.75 0 0 1-.75.75Z"
+                  ></path></svg
+                >Featured</a
+              ><a class="nav-card-link" aria-label="Project Case Studies"
+                ><svg
+                  stroke="currentColor"
+                  fill="currentColor"
+                  stroke-width="0"
+                  viewBox="0 0 24 24"
+                  class="nav-card-link-icon"
+                  aria-hidden="true"
+                  height="1em"
+                  width="1em"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <path
+                    d="M18.25 15.5a.75.75 0 0 1-.75-.75V7.56L7.28 17.78a.749.749 0 0 1-1.275-.326.749.749 0 0 1 .215-.734L16.44 6.5H9.25a.75.75 0 0 1 0-1.5h9a.75.75 0 0 1 .75.75v9a.75.75 0 0 1-.75.75Z"
+                  ></path></svg
+                >Case Studies</a
+              >
+            </div>
+          </div>
+          <div
+            class="nav-card"
+            style="
+              background-color: rgb(39, 30, 55);
+              color: rgb(255, 255, 255);
+              translate: none;
+              rotate: none;
+              scale: none;
+              opacity: 0;
+              transform: translate(0px, 50px);
+            "
+          >
+            <div class="nav-card-label">Contact</div>
+            <div class="nav-card-links">
+              <a class="nav-card-link" aria-label="Email us"
+                ><svg
+                  stroke="currentColor"
+                  fill="currentColor"
+                  stroke-width="0"
+                  viewBox="0 0 24 24"
+                  class="nav-card-link-icon"
+                  aria-hidden="true"
+                  height="1em"
+                  width="1em"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <path
+                    d="M18.25 15.5a.75.75 0 0 1-.75-.75V7.56L7.28 17.78a.749.749 0 0 1-1.275-.326.749.749 0 0 1 .215-.734L16.44 6.5H9.25a.75.75 0 0 1 0-1.5h9a.75.75 0 0 1 .75.75v9a.75.75 0 0 1-.75.75Z"
+                  ></path></svg
+                >Email</a
+              ><a class="nav-card-link" aria-label="Twitter"
+                ><svg
+                  stroke="currentColor"
+                  fill="currentColor"
+                  stroke-width="0"
+                  viewBox="0 0 24 24"
+                  class="nav-card-link-icon"
+                  aria-hidden="true"
+                  height="1em"
+                  width="1em"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <path
+                    d="M18.25 15.5a.75.75 0 0 1-.75-.75V7.56L7.28 17.78a.749.749 0 0 1-1.275-.326.749.749 0 0 1 .215-.734L16.44 6.5H9.25a.75.75 0 0 1 0-1.5h9a.75.75 0 0 1 .75.75v9a.75.75 0 0 1-.75.75Z"
+                  ></path></svg
+                >Twitter</a
+              ><a class="nav-card-link" aria-label="LinkedIn"
+                ><svg
+                  stroke="currentColor"
+                  fill="currentColor"
+                  stroke-width="0"
+                  viewBox="0 0 24 24"
+                  class="nav-card-link-icon"
+                  aria-hidden="true"
+                  height="1em"
+                  width="1em"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <path
+                    d="M18.25 15.5a.75.75 0 0 1-.75-.75V7.56L7.28 17.78a.749.749 0 0 1-1.275-.326.749.749 0 0 1 .215-.734L16.44 6.5H9.25a.75.75 0 0 1 0-1.5h9a.75.75 0 0 1 .75.75v9a.75.75 0 0 1-.75.75Z"
+                  ></path></svg
+                >LinkedIn</a
+              >
+            </div>
+          </div>
+        </div>
+      </nav>
+    </div>
+  </body>
+</html>
