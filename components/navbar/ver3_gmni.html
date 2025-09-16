@@ -1,0 +1,380 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Responsive Navbar</title>
+    <style>
+      :root {
+        --bg-color-dark: #121212;
+        --surface-color-dark: #202020;
+        --text-color-dark: #f0f0f0;
+        --button-bg-dark: #333;
+        --button-text-dark: #f0f0f0;
+        --box-bg-dark: #2c2c2c;
+        --box-border-dark: #444;
+
+        --bg-color-light: #f5f5f5;
+        --surface-color-light: #ffffff;
+        --text-color-light: #1a1a1a;
+        --button-bg-light: #1a1a1a;
+        --button-text-light: #f5f5f5;
+        --box-bg-light: #e0e0e0;
+        --box-border-light: #ccc;
+      }
+
+      body {
+        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
+          "Helvetica Neue", Arial, sans-serif;
+        margin: 0;
+        padding: 0;
+        transition: background-color 0.3s ease, color 0.3s ease;
+      }
+
+      body.dark-mode {
+        background-color: var(--bg-color-dark);
+        color: var(--text-color-dark);
+      }
+
+      body.light-mode {
+        background-color: var(--bg-color-light);
+        color: var(--text-color-light);
+      }
+
+      .navbar-container {
+        width: 90%;
+        max-width: 1200px;
+        margin: 2rem auto 0 auto; /* Centered with top margin */
+        border-radius: 1rem;
+        padding: 1rem;
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+        position: fixed;
+        top: 1rem;
+        left: 50%;
+        transform: translateX(-50%);
+        z-index: 1000;
+        border: 1px solid;
+        transition: background-color 0.3s ease, border-color 0.3s ease;
+      }
+
+      body.dark-mode .navbar-container {
+        background-color: var(--surface-color-dark);
+        border-color: var(--box-border-dark);
+      }
+
+      body.light-mode .navbar-container {
+        background-color: var(--surface-color-light);
+        border-color: var(--box-border-light);
+      }
+
+      .navbar-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+      }
+
+      .logo-container {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        font-size: 1.5rem;
+        font-weight: 600;
+      }
+
+      .get-started-btn {
+        padding: 0.75rem 1.5rem;
+        border-radius: 0.5rem;
+        font-weight: 500;
+        border: none;
+        cursor: pointer;
+        transition: background-color 0.3s ease, color 0.3s ease;
+      }
+
+      body.dark-mode .get-started-btn {
+        background-color: var(--button-bg-dark);
+        color: var(--button-text-dark);
+      }
+
+      body.light-mode .get-started-btn {
+        background-color: var(--button-bg-light);
+        color: var(--button-text-light);
+      }
+
+      .menu-toggle {
+        background: none;
+        border: none;
+        cursor: pointer;
+        padding: 0.5rem;
+      }
+
+      .menu-toggle-icon {
+        width: 2rem;
+        height: 2rem;
+      }
+
+      .menu-toggle-icon svg {
+        stroke-width: 2;
+        stroke-linecap: round;
+        stroke-linejoin: round;
+        transition: stroke 0.3s ease;
+      }
+
+      body.dark-mode .menu-toggle-icon svg {
+        stroke: var(--text-color-dark);
+      }
+
+      body.light-mode .menu-toggle-icon svg {
+        stroke: var(--text-color-light);
+      }
+
+      .menu-content {
+        display: flex;
+        gap: 1rem;
+        margin-top: 1.5rem;
+        visibility: hidden;
+        opacity: 0;
+        max-height: 0;
+        overflow: hidden;
+        transition: opacity 0.3s ease, max-height 0.3s ease, visibility 0s 0.3s;
+      }
+
+      .menu-content.open {
+        visibility: visible;
+        opacity: 1;
+        max-height: 500px;
+        transition: opacity 0.3s ease, max-height 0.5s ease, visibility 0s;
+      }
+
+      .menu-box {
+        flex: 1;
+        padding: 1.5rem;
+        border-radius: 0.5rem;
+        border: 1px solid;
+        transition: background-color 0.3s ease, border-color 0.3s ease;
+      }
+
+      body.dark-mode .menu-box {
+        background-color: var(--box-bg-dark);
+        border-color: var(--box-border-dark);
+      }
+
+      body.light-mode .menu-box {
+        background-color: var(--box-bg-light);
+        border-color: var(--box-border-light);
+      }
+
+      .menu-box h3 {
+        font-size: 1.25rem;
+        font-weight: 600;
+        margin-bottom: 1rem;
+      }
+
+      .menu-box ul {
+        list-style: none;
+        padding: 0;
+        margin: 0;
+      }
+
+      .menu-box li {
+        margin-bottom: 0.5rem;
+      }
+
+      .menu-box a {
+        text-decoration: none;
+        color: inherit;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        transition: color 0.3s ease;
+      }
+
+      .menu-box a:hover {
+        opacity: 0.8;
+      }
+
+      .theme-toggle-btn {
+        background: none;
+        border: none;
+        cursor: pointer;
+        color: var(--text-color);
+        font-size: 1.5rem;
+        margin-left: 1rem;
+        transition: transform 0.3s ease;
+      }
+
+      body.dark-mode .theme-toggle-btn {
+        color: var(--text-color-dark);
+      }
+
+      body.light-mode .theme-toggle-btn {
+        color: var(--text-color-light);
+      }
+
+      /* Responsive styles */
+      @media (max-width: 768px) {
+        .get-started-btn {
+          display: none;
+        }
+
+        .menu-content {
+          flex-direction: column;
+        }
+      }
+    </style>
+  </head>
+  <body class="dark-mode">
+    <div class="navbar-container">
+      <div class="navbar-header">
+        <div style="display: flex; align-items: center; gap: 1rem">
+          <button id="menu-toggle" class="menu-toggle">
+            <div class="menu-toggle-icon">
+              <svg
+                class="hamburger-icon"
+                xmlns="http://www.w3.org/2000/svg"
+                width="24"
+                height="24"
+                viewBox="0 0 24 24"
+                fill="none"
+              >
+                <path d="M4 6h16M4 12h16M4 18h16"></path>
+              </svg>
+              <svg
+                class="close-icon"
+                xmlns="http://www.w3.org/2000/svg"
+                width="24"
+                height="24"
+                viewBox="0 0 24 24"
+                fill="none"
+                style="display: none"
+              >
+                <path d="M18 6L6 18M6 6l12 12"></path>
+              </svg>
+            </div>
+          </button>
+          <div class="logo-container">
+            <span>React Bits</span>
+          </div>
+        </div>
+        <div style="display: flex; align-items: center">
+          <button class="get-started-btn">Get Started</button>
+          <button id="theme-toggle" class="theme-toggle-btn">
+            <svg
+              id="moon-icon"
+              xmlns="http://www.w3.org/2000/svg"
+              width="24"
+              height="24"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            >
+              <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+            </svg>
+            <svg
+              id="sun-icon"
+              xmlns="http://www.w3.org/2000/svg"
+              width="24"
+              height="24"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              style="display: none"
+            >
+              <circle cx="12" cy="12" r="5"></circle>
+              <line x1="12" y1="1" x2="12" y2="3"></line>
+              <line x1="12" y1="21" x2="12" y2="23"></line>
+              <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+              <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+              <line x1="1" y1="12" x2="3" y2="12"></line>
+              <line x1="21" y1="12" x2="23" y2="12"></line>
+              <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+              <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+            </svg>
+          </button>
+        </div>
+      </div>
+      <div id="menu-content" class="menu-content">
+        <div class="menu-box">
+          <h3>About</h3>
+          <ul>
+            <li><a href="#">Company</a></li>
+            <li><a href="#">Careers</a></li>
+          </ul>
+        </div>
+        <div class="menu-box">
+          <h3>Projects</h3>
+          <ul>
+            <li><a href="#">Featured</a></li>
+            <li><a href="#">Case Studies</a></li>
+          </ul>
+        </div>
+        <div class="menu-box">
+          <h3>Contact</h3>
+          <ul>
+            <li><a href="#">Email</a></li>
+            <li><a href="#">Twitter</a></li>
+            <li><a href="#">LinkedIn</a></li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <script>
+      document.addEventListener("DOMContentLoaded", () => {
+        const menuToggle = document.getElementById("menu-toggle");
+        const menuContent = document.getElementById("menu-content");
+        const hamburgerIcon = menuToggle.querySelector(".hamburger-icon");
+        const closeIcon = menuToggle.querySelector(".close-icon");
+
+        menuToggle.addEventListener("click", () => {
+          const isOpen = menuContent.classList.toggle("open");
+
+          if (isOpen) {
+            hamburgerIcon.style.display = "none";
+            closeIcon.style.display = "block";
+          } else {
+            hamburgerIcon.style.display = "block";
+            closeIcon.style.display = "none";
+          }
+        });
+
+        // Theme toggle logic
+        const themeToggleBtn = document.getElementById("theme-toggle");
+        const body = document.body;
+        const moonIcon = document.getElementById("moon-icon");
+        const sunIcon = document.getElementById("sun-icon");
+
+        const currentTheme = localStorage.getItem("theme") || "dark-mode";
+        body.className = currentTheme;
+        if (currentTheme === "dark-mode") {
+          moonIcon.style.display = "block";
+          sunIcon.style.display = "none";
+        } else {
+          moonIcon.style.display = "none";
+          sunIcon.style.display = "block";
+        }
+
+        themeToggleBtn.addEventListener("click", () => {
+          if (body.classList.contains("dark-mode")) {
+            body.classList.remove("dark-mode");
+            body.classList.add("light-mode");
+            localStorage.setItem("theme", "light-mode");
+            moonIcon.style.display = "none";
+            sunIcon.style.display = "block";
+          } else {
+            body.classList.remove("light-mode");
+            body.classList.add("dark-mode");
+            localStorage.setItem("theme", "dark-mode");
+            moonIcon.style.display = "block";
+            sunIcon.style.display = "none";
+          }
+        });
+      });
+    </script>
+  </body>
+</html>
