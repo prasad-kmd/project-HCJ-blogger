@@ -1,0 +1,611 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mech-EngineerLK | Mechanical & Mechatronics Engineering</title>
+    <style>
+        /* CSS Variables for consistent theming */
+        :root {
+            --primary: #2c3e50;
+            --secondary: #e74c3c;
+            --accent: #3498db;
+            --light: #ecf0f1;
+            --dark: #2c3e50;
+            --text: #333;
+            --text-light: #777;
+            --shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            --transition: all 0.3s ease;
+        }
+
+        /* Global Styles */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: var(--text);
+            background-color: #f9f9f9;
+        }
+
+        a {
+            text-decoration: none;
+            color: var(--accent);
+            transition: var(--transition);
+        }
+
+        a:hover {
+            color: var(--secondary);
+        }
+
+        .container {
+            width: 90%;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 15px;
+        }
+
+        .btn {
+            display: inline-block;
+            padding: 10px 20px;
+            background-color: var(--secondary);
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+
+        .btn:hover {
+            background-color: #c0392b;
+            transform: translateY(-2px);
+        }
+
+        .section {
+            padding: 60px 0;
+        }
+
+        .section-title {
+            text-align: center;
+            margin-bottom: 40px;
+            color: var(--primary);
+            position: relative;
+        }
+
+        .section-title::after {
+            content: '';
+            display: block;
+            width: 60px;
+            height: 3px;
+            background-color: var(--secondary);
+            margin: 15px auto;
+        }
+
+        /* Header Styles */
+        header {
+            background-color: var(--primary);
+            color: white;
+            padding: 15px 0;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            box-shadow: var(--shadow);
+        }
+
+        .header-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: white;
+        }
+
+        .logo span {
+            color: var(--secondary);
+        }
+
+        nav ul {
+            display: flex;
+            list-style: none;
+        }
+
+        nav ul li {
+            margin-left: 25px;
+        }
+
+        nav ul li a {
+            color: white;
+            font-weight: 500;
+        }
+
+        nav ul li a:hover {
+            color: var(--secondary);
+        }
+
+        .menu-toggle {
+            display: none;
+            cursor: pointer;
+            font-size: 1.5rem;
+        }
+
+        /* Hero Section */
+        .hero {
+            background: linear-gradient(rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.7)), url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="100" height="100" viewBox="0 0 100 100"><rect width="100" height="100" fill="%232c3e50"/><path d="M0 0L100 100" stroke="%233498db" stroke-width="2"/><path d="M100 0L0 100" stroke="%233498db" stroke-width="2"/></svg>');
+            background-size: cover;
+            background-position: center;
+            color: white;
+            text-align: center;
+            padding: 100px 0;
+        }
+
+        .hero h1 {
+            font-size: 3rem;
+            margin-bottom: 20px;
+        }
+
+        .hero p {
+            font-size: 1.2rem;
+            max-width: 700px;
+            margin: 0 auto 30px;
+        }
+
+        /* Featured Posts */
+        .featured-posts {
+            background-color: white;
+        }
+
+        .posts-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 30px;
+        }
+
+        .post-card {
+            background-color: white;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: var(--shadow);
+            transition: var(--transition);
+        }
+
+        .post-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+        }
+
+        .post-img {
+            height: 200px;
+            background-color: var(--light);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--text-light);
+        }
+
+        .post-content {
+            padding: 20px;
+        }
+
+        .post-content h3 {
+            margin-bottom: 10px;
+            color: var(--primary);
+        }
+
+        .post-meta {
+            display: flex;
+            justify-content: space-between;
+            color: var(--text-light);
+            font-size: 0.9rem;
+            margin-bottom: 15px;
+        }
+
+        /* Labels Section */
+        .labels-section {
+            background-color: var(--light);
+        }
+
+        .labels-container {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 15px;
+        }
+
+        .label {
+            background-color: white;
+            padding: 10px 20px;
+            border-radius: 30px;
+            box-shadow: var(--shadow);
+            display: flex;
+            align-items: center;
+            transition: var(--transition);
+        }
+
+        .label:hover {
+            background-color: var(--accent);
+            color: white;
+        }
+
+        .label-count {
+            background-color: var(--secondary);
+            color: white;
+            border-radius: 50%;
+            width: 25px;
+            height: 25px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-left: 8px;
+            font-size: 0.8rem;
+        }
+
+        /* About Section */
+        .about {
+            background-color: white;
+        }
+
+        .about-content {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 40px;
+            align-items: center;
+        }
+
+        .about-text h2 {
+            margin-bottom: 20px;
+            color: var(--primary);
+        }
+
+        .about-image {
+            background-color: var(--light);
+            height: 300px;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--text-light);
+        }
+
+        /* Footer */
+        footer {
+            background-color: var(--dark);
+            color: white;
+            padding: 40px 0 20px;
+        }
+
+        .footer-content {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 30px;
+            margin-bottom: 30px;
+        }
+
+        .footer-section h3 {
+            margin-bottom: 20px;
+            position: relative;
+            padding-bottom: 10px;
+        }
+
+        .footer-section h3::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 40px;
+            height: 2px;
+            background-color: var(--secondary);
+        }
+
+        .footer-links {
+            list-style: none;
+        }
+
+        .footer-links li {
+            margin-bottom: 10px;
+        }
+
+        .footer-links a {
+            color: #ddd;
+        }
+
+        .footer-links a:hover {
+            color: var(--secondary);
+        }
+
+        .social-links {
+            display: flex;
+            gap: 15px;
+            margin-top: 20px;
+        }
+
+        .social-links a {
+            color: white;
+            background-color: rgba(255, 255, 255, 0.1);
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: var(--transition);
+        }
+
+        .social-links a:hover {
+            background-color: var(--secondary);
+        }
+
+        .copyright {
+            text-align: center;
+            padding-top: 20px;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            font-size: 0.9rem;
+            color: #aaa;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .menu-toggle {
+                display: block;
+            }
+
+            nav {
+                position: absolute;
+                top: 70px;
+                left: 0;
+                width: 100%;
+                background-color: var(--primary);
+                padding: 0;
+                max-height: 0;
+                overflow: hidden;
+                transition: max-height 0.3s ease;
+            }
+
+            nav.active {
+                max-height: 300px;
+            }
+
+            nav ul {
+                flex-direction: column;
+                padding: 20px;
+            }
+
+            nav ul li {
+                margin: 10px 0;
+            }
+
+            .hero h1 {
+                font-size: 2.2rem;
+            }
+
+            .about-content {
+                grid-template-columns: 1fr;
+            }
+
+            .post-content h3 {
+                font-size: 1.1rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header>
+        <div class="container header-container">
+            <div class="logo">MECH-<span>ENGINEER</span>LK</div>
+            <div class="menu-toggle">☰</div>
+            <nav>
+                <ul>
+                    <li><a href="#home">Home</a></li>
+                    <li><a href="#posts">Posts</a></li>
+                    <li><a href="#projects">Projects</a></li>
+                    <li><a href="#about">About</a></li>
+                    <li><a href="#contact">Contact</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <!-- Hero Section -->
+    <section class="hero" id="home">
+        <div class="container">
+            <h1>Mechanical & Mechatronics Engineering</h1>
+            <p>Exploring the intersection of mechanical systems, electronics, and computing through innovative projects and research.</p>
+            <a href="#posts" class="btn">Explore Articles</a>
+        </div>
+    </section>
+
+    <!-- Featured Posts -->
+    <section class="section featured-posts" id="posts">
+        <div class="container">
+            <h2 class="section-title">Featured Posts</h2>
+            <div class="posts-grid">
+                <!-- Post 1 -->
+                <div class="post-card">
+                    <div class="post-img">CAD Design Illustration</div>
+                    <div class="post-content">
+                        <h3>Fundamental Principles of CAD and CADD</h3>
+                        <div class="post-meta">
+                            <span class="author">PERSAD MADHURANGA</span>
+                            <span class="date">Jul 28, 2025</span>
+                        </div>
+                        <p>Computer-Aided Design (CAD) and Computer-Aided Design and Drafting (CADD) have revolutionized mechanical engineering design processes.</p>
+                        <a href="#" class="btn">Read More</a>
+                    </div>
+                </div>
+                
+                <!-- Post 2 -->
+                <div class="post-card">
+                    <div class="post-img">Sinhala Numerals</div>
+                    <div class="post-content">
+                        <h3>Sinhala Archaic Numbers</h3>
+                        <div class="post-meta">
+                            <span class="author">PERSON</span>
+                            <span class="date">Jul 29, 2025</span>
+                        </div>
+                        <p>Unicode representation, font support and digital preservation challenges of traditional Sinhala numbering systems.</p>
+                        <a href="#" class="btn">Read More</a>
+                    </div>
+                </div>
+                
+                <!-- Post 3 -->
+                <div class="post-card">
+                    <div class="post-img">CAM Process</div>
+                    <div class="post-content">
+                        <h3>Advanced CAM Manufacturing Techniques</h3>
+                        <div class="post-meta">
+                            <span class="author">ENGINEER LK</span>
+                            <span class="date">Aug 15, 2025</span>
+                        </div>
+                        <p>Exploring modern Computer-Aided Manufacturing processes and their applications in industrial production.</p>
+                        <a href="#" class="btn">Read More</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Labels Section -->
+    <section class="section labels-section">
+        <div class="container">
+            <h2 class="section-title">Topics & Categories</h2>
+            <div class="labels-container">
+                <div class="label">CAD <span class="label-count">4</span></div>
+                <div class="label">CAM <span class="label-count">4</span></div>
+                <div class="label">DMS202 <span class="label-count">5</span></div>
+                <div class="label">Mathematics <span class="label-count">5</span></div>
+                <div class="label">Manufacturing <span class="label-count">4</span></div>
+                <div class="label">Daily Tech <span class="label-count">7</span></div>
+                <div class="label">Technology <span class="label-count">7</span></div>
+                <div class="label">Made with AI <span class="label-count">7</span></div>
+                <div class="label">Convolution <span class="label-count">2</span></div>
+                <div class="label">Signal Processing <span class="label-count">2</span></div>
+                <div class="label">CM <span class="label-count">2</span></div>
+                <div class="label">DMS441 <span class="label-count">2</span></div>
+                <div class="label">Infography <span class="label-count">2</span></div>
+                <div class="label">LaTeX <span class="label-count">2</span></div>
+                <div class="label">Show more +</div>
+            </div>
+        </div>
+    </section>
+
+    <!-- About Section -->
+    <section class="section about" id="about">
+        <div class="container">
+            <h2 class="section-title">About Me</h2>
+            <div class="about-content">
+                <div class="about-text">
+                    <h2>Mechatronics Engineer & Researcher</h2>
+                    <p>Welcome to my engineering blog where I share insights on mechanical design, mechatronics systems, and technology innovations. With expertise in CAD/CAM systems, manufacturing processes, and digital signal processing, I explore the cutting edge of engineering technology.</p>
+                    <p>This platform serves as a knowledge repository for engineering concepts, project documentation, and technology analyses with practical applications for students and professionals alike.</p>
+                    <a href="#" class="btn">Learn More</a>
+                </div>
+                <div class="about-image">
+                    Engineering Profile Image
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer id="contact">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-section">
+                    <h3>MECH-ENGINEERLK</h3>
+                    <p>A dedicated platform for mechanical and mechatronics engineering knowledge, resources, and innovation.</p>
+                    <div class="social-links">
+                        <a href="#">📱</a>
+                        <a href="#">📷</a>
+                        <a href="#">👨‍💼</a>
+                        <a href="#">🐦</a>
+                    </div>
+                </div>
+                <div class="footer-section">
+                    <h3>Quick Links</h3>
+                    <ul class="footer-links">
+                        <li><a href="#home">Home</a></li>
+                        <li><a href="#posts">Articles</a></li>
+                        <li><a href="#projects">Projects</a></li>
+                        <li><a href="#about">About</a></li>
+                        <li><a href="#contact">Contact</a></li>
+                    </ul>
+                </div>
+                <div class="footer-section">
+                    <h3>Contact Info</h3>
+                    <p>Email: contact@mech-engineerlk.com</p>
+                    <p>Phone: +94 77 123 4567</p>
+                    <p>Location: Colombo, Sri Lanka</p>
+                </div>
+            </div>
+            <div class="copyright">
+                <p>&copy; 2025 MECH-ENGINEERLK. All Rights Reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // Mobile menu toggle
+        document.querySelector('.menu-toggle').addEventListener('click', function() {
+            document.querySelector('nav').classList.toggle('active');
+        });
+
+        // Close menu when clicking on a link
+        document.querySelectorAll('nav a').forEach(link => {
+            link.addEventListener('click', () => {
+                document.querySelector('nav').classList.remove('active');
+            });
+        });
+
+        // Smooth scrolling for navigation links
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function(e) {
+                e.preventDefault();
+                
+                const targetId = this.getAttribute('href');
+                if (targetId === '#') return;
+                
+                const targetElement = document.querySelector(targetId);
+                if (targetElement) {
+                    window.scrollTo({
+                        top: targetElement.offsetTop - 70,
+                        behavior: 'smooth'
+                    });
+                }
+            });
+        });
+
+        // Simple animation for post cards on scroll
+        function checkScroll() {
+            const posts = document.querySelectorAll('.post-card');
+            posts.forEach(post => {
+                const postPosition = post.getBoundingClientRect().top;
+                const screenPosition = window.innerHeight / 1.3;
+                
+                if (postPosition < screenPosition) {
+                    post.style.opacity = 1;
+                    post.style.transform = 'translateY(0)';
+                }
+            });
+        }
+
+        // Initialize post animation styles
+        document.querySelectorAll('.post-card').forEach(post => {
+            post.style.opacity = 0;
+            post.style.transform = 'translateY(20px)';
+            post.style.transition = 'opacity 0.5s ease, transform 0.5s ease';
+        });
+
+        // Check scroll on load and scroll
+        window.addEventListener('load', checkScroll);
+        window.addEventListener('scroll', checkScroll);
+    </script>
+</body>
+</html>
