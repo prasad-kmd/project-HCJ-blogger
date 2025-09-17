@@ -1,0 +1,35 @@
+{
+    "manifest_version": 3,
+    "name": "Premium Blog Access",
+    "version": "1.0",
+    "description": "Access premium content on our blog without registration",
+    "icons": {
+        "16": "icons/icon16.png",
+        "48": "icons/icon48.png",
+        "128": "icons/icon128.png"
+    },
+    "permissions": [
+        "webRequest",
+        "scripting"
+    ],
+    "host_permissions": [
+        "https://yourblog.com/*"
+    ],
+    "background": {
+        "service_worker": "background.js"
+    },
+    "content_scripts": [
+        {
+            "matches": [
+                "https://yourblog.com/*"
+            ],
+            "js": [
+                "contentScript.js"
+            ]
+        }
+    ],
+    "action": {
+        "default_popup": "popup.html",
+        "default_title": "Premium Blog Access"
+    }
+}

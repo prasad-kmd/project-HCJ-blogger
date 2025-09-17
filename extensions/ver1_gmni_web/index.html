@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+    <script>
+      // Replace with your actual extension ID.
+      const EXTENSION_ID = "ohkbchgonffbeklbcnonjpnhgjeccogg";
+
+      if (typeof chrome !== "undefined" && chrome.runtime) {
+        chrome.runtime.sendMessage(
+          EXTENSION_ID,
+          { action: "checkAccess" },
+          (response) => {
+            if (chrome.runtime.lastError) {
+              console.warn(
+                "Could not connect to extension:",
+                chrome.runtime.lastError.message
+              );
+              return;
+            }
+
+            if (response && response.accessGranted) {
+              document.getElementById("premium-content").style.display =
+                "block";
+              document.getElementById("no-access-message").style.display =
+                "none";
+            }
+          }
+        );
+      }
+    </script>
+  </head>
+  <body>
+    <div id="premium-content" style="display: none">
+      <h2>Premium Blog Post Title</h2>
+      <p>This content is exclusive to our extension users!</p>
+    </div>
+
+    <div id="no-access-message">
+      <p>
+        To view this content, please
+        <a href="LINK_TO_YOUR_EXTENSION">install our Chrome extension</a>.
+      </p>
+    </div>
+  </body>
+</html>
