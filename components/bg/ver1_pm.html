@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Background Aura Component</title>
+    <style>
+      :root {
+        --stripe-color: #fff;
+      }
+
+      .dark-theme {
+        --stripe-color: #000;
+      }
+
+      body {
+        background-color: #f8f9fa;
+      }
+      .dark-theme body {
+        background-color: #121212;
+      }
+
+      .hero-background {
+        position: absolute;
+        inset: 0;
+        width: 100%;
+        height: 100%;
+        --stripes: repeating-linear-gradient(
+          100deg,
+          var(--stripe-color) 0%,
+          var(--stripe-color) 7%,
+          transparent 10%,
+          transparent 12%,
+          var(--stripe-color) 16%
+        );
+        --rainbow: repeating-linear-gradient(
+          100deg,
+          #2563eb 10%,
+          #3b82f6 15%,
+          #60a5fa 20%,
+          #93c5fd 25%,
+          #2563eb 30%
+        );
+        background-image: var(--stripes), var(--rainbow);
+        background-size: 300%, 200%;
+        background-position: 50% 50%, 50% 50%;
+        filter: blur(10px) invert(100%);
+        mask-image: radial-gradient(
+          ellipse at 100% 0%,
+          black 40%,
+          transparent 70%
+        );
+        z-index: -1;
+      }
+
+      .dark-theme .hero-background {
+        filter: blur(10px) opacity(50%) saturate(200%);
+      }
+
+      .hero-background::after {
+        content: "";
+        position: absolute;
+        inset: 0;
+        background-image: var(--stripes), var(--rainbow);
+        background-size: 200%, 100%;
+        animation: smoothBg 60s linear infinite;
+        background-attachment: fixed;
+        mix-blend-mode: difference;
+      }
+
+      @keyframes smoothBg {
+        from {
+          background-position: 50% 50%, 50% 50%;
+        }
+        to {
+          background-position: 350% 50%, 350% 50%;
+        }
+      }
+    </style>
+  </head>
+  <body class="dark-theme">
+    <div class="hero-background"></div>
+
+    <script>
+      document.addEventListener("DOMContentLoaded", () => {
+        // Add parallax effect to hero background
+        window.addEventListener("scroll", () => {
+          const scrollPosition = window.scrollY;
+          const heroBackground = document.querySelector(".hero-background");
+
+          if (heroBackground) {
+            // Parallax effect - move background slightly as user scrolls
+            heroBackground.style.transform = `translateY(${
+              scrollPosition * 0.3
+            }px)`;
+          }
+        });
+      });
+    </script>
+  </body>
+</html>

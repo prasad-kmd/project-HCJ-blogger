@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Hero Section Component</title>
+    <style>
+      :root {
+        --primary-color: #2563eb;
+        --text-color: #333;
+        --text-color-secondary: #555;
+        --card-bg: rgba(255, 255, 255, 0.7);
+      }
+
+      .dark-theme {
+        --primary-color: #3b82f6;
+        --text-color: #f1f1f1;
+        --text-color-secondary: #c5c5c5;
+        --card-bg: rgba(30, 30, 30, 0.7);
+      }
+
+      body {
+        background-color: #f8f9fa;
+      }
+
+      .dark-theme body {
+        background-color: #121212;
+      }
+
+      .hero {
+        position: relative;
+        min-height: calc(100vh - 70px);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        overflow: hidden;
+        padding: 0.5rem 0;
+      }
+
+      .hero .container {
+        display: flex;
+        align-items: center;
+        position: relative;
+        z-index: 1;
+        width: 90%;
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 0 15px;
+      }
+
+      .hero-content {
+        flex: 1;
+        padding-right: 2rem;
+        position: relative;
+        z-index: 1;
+      }
+
+      .hero-content h1 {
+        font-size: clamp(2rem, 5vw, 3.5rem);
+        margin-bottom: 1.5rem;
+        line-height: 1.1;
+        color: var(--text-color);
+        font-weight: 700;
+        transition: color var(--transition-speed) ease;
+      }
+
+      .hero-content h1 span {
+        color: var(--primary-color);
+        display: block;
+        transition: color var(--transition-speed) ease;
+      }
+
+      .hero-content p {
+        font-size: clamp(1rem, 2vw, 1.25rem);
+        margin-bottom: 2rem;
+        color: var(--text-color-secondary);
+        max-width: 600px;
+        transition: color var(--transition-speed) ease;
+      }
+
+      .hero-cta {
+        display: flex;
+        gap: 1rem;
+        flex-wrap: wrap;
+      }
+
+      .cta-button {
+        display: inline-block;
+        background: var(--primary-color);
+        color: #fff;
+        border: none;
+        padding: 0.75rem 1.5rem;
+        border-radius: 30px;
+        font-size: 1rem;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        text-decoration: none;
+        font-weight: 500;
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+      }
+
+      .cta-button.secondary {
+        background: transparent;
+        border: 2px solid var(--primary-color);
+        color: var(--primary-color);
+      }
+
+      .dark-theme .cta-button.secondary {
+        border-color: var(--accent-color);
+        color: var(--accent-color);
+      }
+
+      .cta-button:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 6px 15px rgba(0, 0, 0, 0.3);
+      }
+
+      .cta-button.secondary:hover {
+        background: rgba(43, 99, 235, 0.1);
+      }
+
+      .hero-image {
+        flex: 1;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        position: relative;
+        z-index: 1;
+      }
+
+      .glass-card {
+        background: var(--card-bg);
+        backdrop-filter: blur(10px);
+        -webkit-backdrop-filter: blur(10px);
+        border-radius: 16px;
+        padding: 1rem;
+        box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        overflow: hidden;
+        transition: transform 0.3s ease;
+      }
+
+      .dark-theme .glass-card {
+        border: 1px solid rgba(255, 255, 255, 0.05);
+      }
+
+      .glass-card:hover {
+        transform: translateY(-10px);
+      }
+
+      .glass-card img {
+        border-radius: 8px;
+        transition: transform 0.5s ease;
+        max-width: 400px;
+        width: 100%;
+      }
+
+      .glass-card:hover img {
+        transform: scale(1.05);
+      }
+    </style>
+  </head>
+  <body class="dark-theme">
+    <section id="home" class="hero">
+      <div class="container">
+        <div class="hero-content">
+          <h1>Innovative <span>Mechanical Engineering</span> Solutions</h1>
+          <p>
+            Transforming complex engineering challenges into elegant, efficient
+            solutions
+          </p>
+          <div class="hero-cta">
+            <a href="#" class="cta-button">View My Work</a>
+            <a href="#" class="cta-button secondary">Get In Touch</a>
+          </div>
+        </div>
+        <div class="hero-image">
+          <div class="glass-card">
+            <img src="https://placehold.co/400" alt="Mechanical Engineer" />
+          </div>
+        </div>
+      </div>
+    </section>
+  </body>
+</html>
