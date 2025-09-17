@@ -1,0 +1,406 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Reddit-Style Bento Card Grid</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      :root {
+        --bg-color-light: #f8f8f8;
+        --card-bg-light: #ffffff;
+        --text-color-light: #1c1c1c;
+        --secondary-text-light: #7c7c7c;
+        --border-color-light: #e0e0e0;
+        --accent-color-light: #ff4500;
+        --upvote-color-light: #ff4500;
+        --downvote-color-light: #0079d3;
+        --btn-bg-light: #f0f0f0;
+        --btn-hover-light: #e0e0e0;
+      }
+
+      body.dark-mode {
+        --bg-color-light: #030303;
+        --card-bg-light: #1a1a1b;
+        --text-color-light: #d7dadc;
+        --secondary-text-light: #a2a2a2;
+        --border-color-light: #343536;
+        --accent-color-light: #ff5700;
+        --upvote-color-light: #ff5700;
+        --downvote-color-light: #7193ff;
+        --btn-bg-light: #2d2d2d;
+        --btn-hover-light: #3e3e3f;
+      }
+
+      body {
+        font-family: "Inter", sans-serif;
+        background-color: var(--bg-color-light);
+        color: var(--text-color-light);
+        margin: 0;
+        padding: 2rem;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        min-height: 100vh;
+        transition: background-color 0.5s;
+      }
+
+      h1 {
+        font-size: clamp(2rem, 5vw, 3rem);
+        font-weight: 700;
+        margin-bottom: 2rem;
+        text-align: center;
+      }
+
+      .toggle-container {
+        position: absolute;
+        top: 2rem;
+        right: 2rem;
+        z-index: 10;
+      }
+
+      .dark-mode-toggle {
+        cursor: pointer;
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
+        background: var(--card-bg-light);
+        border: 2px solid var(--border-color-light);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        transition: background-color 0.5s, border-color 0.5s, transform 0.2s;
+      }
+
+      .dark-mode-toggle:hover {
+        transform: scale(1.05);
+      }
+
+      .dark-mode-toggle svg {
+        fill: var(--text-color-light);
+        transition: fill 0.5s;
+        width: 20px;
+        height: 20px;
+      }
+
+      .bento-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(min(300px, 100%), 1fr));
+        gap: 1.5rem;
+        width: 100%;
+        max-width: 1200px;
+        padding: 0;
+      }
+
+      .bento-card {
+        background-color: var(--card-bg-light);
+        border: 1px solid var(--border-color-light);
+        border-radius: 8px;
+        padding: 1rem;
+        display: flex;
+        flex-direction: column;
+        gap: 0.5rem;
+        transition: background-color 0.5s, border-color 0.5s,
+          transform 0.3s ease-out;
+        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
+        opacity: 0;
+        transform: translateY(20px);
+      }
+
+      .bento-card.show {
+        opacity: 1;
+        transform: translateY(0);
+      }
+
+      .bento-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+      }
+
+      body.dark-mode .bento-card {
+        box-shadow: none;
+      }
+
+      .card-header {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        font-size: 0.8rem;
+        color: var(--secondary-text-light);
+        flex-wrap: wrap;
+      }
+
+      .card-header .subreddit-name {
+        font-weight: 600;
+        color: var(--text-color-light);
+      }
+
+      .card-title {
+        font-size: 1.2rem;
+        font-weight: 600;
+        color: var(--text-color-light);
+        margin: 0;
+        flex-grow: 1;
+      }
+
+      .card-body p {
+        font-size: 0.9rem;
+        line-height: 1.5;
+        color: var(--text-color-light);
+        margin: 0.5rem 0;
+      }
+
+      .card-footer {
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+        font-size: 0.8rem;
+        color: var(--secondary-text-light);
+      }
+
+      .votes {
+        display: flex;
+        align-items: center;
+        gap: 0.2rem;
+      }
+
+      .votes-btn {
+        background: none;
+        border: none;
+        cursor: pointer;
+        padding: 0.2rem;
+        font-size: 1.2rem;
+        transition: transform 0.2s ease-out;
+        user-select: none;
+      }
+
+      .votes-btn:active {
+        transform: scale(1.1);
+      }
+
+      .votes-btn.upvote {
+        color: var(--upvote-color-light);
+      }
+      .votes-btn.downvote {
+        color: var(--downvote-color-light);
+      }
+      .votes-count {
+        font-weight: 600;
+      }
+
+      .comments {
+        display: flex;
+        align-items: center;
+        gap: 0.2rem;
+      }
+
+      .load-more-btn {
+        background-color: var(--btn-bg-light);
+        color: var(--text-color-light);
+        border: 1px solid var(--border-color-light);
+        border-radius: 20px;
+        padding: 0.75rem 2rem;
+        margin-top: 2rem;
+        cursor: pointer;
+        font-size: 1rem;
+        font-weight: 600;
+        transition: background-color 0.3s, transform 0.2s, box-shadow 0.2s;
+      }
+
+      .load-more-btn:hover {
+        background-color: var(--btn-hover-light);
+        transform: translateY(-2px);
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+      }
+
+      body.dark-mode .load-more-btn {
+        box-shadow: none;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="toggle-container">
+      <button
+        id="dark-mode-toggle"
+        class="dark-mode-toggle"
+        aria-label="Toggle dark mode"
+      >
+        <svg
+          id="moon-icon"
+          xmlns="http://www.w3.org/2000/svg"
+          viewBox="0 0 24 24"
+        >
+          <path
+            d="M12 2.25a.75.75 0 0 1 .75.75v2.25a.75.75 0 0 1-1.5 0V3a.75.75 0 0 1 .75-.75ZM7.5 12a4.5 4.5 0 1 1 9 0 4.5 4.5 0 0 1-9 0ZM18.894 6.106a.75.75 0 0 0-1.06-1.06l-1.59 1.59a.75.75 0 0 0 1.06 1.06l1.59-1.59ZM21.75 12a.75.75 0 0 1-.75.75h-2.25a.75.75 0 0 1 0-1.5h2.25a.75.75 0 0 1 .75.75ZM12 18.75a.75.75 0 0 1-.75.75v2.25a.75.75 0 0 1 1.5 0v-2.25a.75.75 0 0 1-.75-.75ZM6.106 18.894a.75.75 0 0 0 1.06 1.06l1.59-1.59a.75.75 0 1 0-1.06-1.06l-1.59 1.59ZM4.5 12a.75.75 0 0 1-.75.75H1.5a.75.75 0 0 1 0-1.5h2.25a.75.75 0 0 1 .75.75ZM6.106 6.106a.75.75 0 0 0-1.06-1.06l-1.59 1.59a.75.75 0 0 0 1.06 1.06l1.59-1.59Z"
+          />
+        </svg>
+      </button>
+    </div>
+
+    <h1>Daily Digest</h1>
+    <div class="bento-grid" id="card-grid"></div>
+
+    <button class="load-more-btn" id="loadMoreBtn">Load More</button>
+
+    <script>
+      document.addEventListener("DOMContentLoaded", () => {
+        const cardGrid = document.getElementById("card-grid");
+        const loadMoreBtn = document.getElementById("loadMoreBtn");
+        const darkModeToggle = document.getElementById("dark-mode-toggle");
+        const body = document.body;
+
+        const cardData = [
+          {
+            subreddit: "programming",
+            author: "u/dev_pro",
+            title: "Why I Switched to Using CSS Grid for Everything",
+            text: "CSS Grid has completely changed my workflow. The control over layout is unmatched...",
+            votes: 1245,
+            comments: 231,
+          },
+          {
+            subreddit: "webdev",
+            author: "u/html_wizard",
+            title: "The Unbearable Weight of Modern Web Dev",
+            text: "From bundlers to frameworks, the ecosystem feels overwhelming. What happened to simple HTML?",
+            votes: 890,
+            comments: 452,
+          },
+          {
+            subreddit: "javascript",
+            author: "u/code_ninja",
+            title: "My Experience Building a Game with Pure JS",
+            text: "Learned so much about the DOM and performance. Here's a breakdown of the process.",
+            votes: 567,
+            comments: 98,
+          },
+          {
+            subreddit: "frontend",
+            author: "u/ui_designer",
+            title: "Elegant Animations Without JavaScript",
+            text: "A deep dive into CSS-only animations for a smoother user experience.",
+            votes: 341,
+            comments: 76,
+          },
+          {
+            subreddit: "technology",
+            author: "u/tech_enthusiast",
+            title: "The Rise of AI in Creative Industries",
+            text: "How artificial intelligence is changing everything from art to music production.",
+            votes: 2112,
+            comments: 543,
+          },
+          {
+            subreddit: "dataisbeautiful",
+            author: "u/dataviz_guru",
+            title: "Visualizing Global Temperature Anomalies Since 1880",
+            text: "Using a combination of D3.js and public datasets to create an interactive chart.",
+            votes: 754,
+            comments: 156,
+          },
+          {
+            subreddit: "gamedev",
+            author: "u/pixel_master",
+            title: "Creating Pixel Art from Scratch: A Beginner's Guide",
+            text: "A step-by-step tutorial on designing and animating pixel art characters for your game.",
+            votes: 91,
+            comments: 27,
+          },
+          {
+            subreddit: "linux",
+            author: "u/tux_user",
+            title: "My Favorite Customizations for a Minimalist Desktop",
+            text: "From a clean theme to a custom script that manages my window layout.",
+            votes: 420,
+            comments: 89,
+          },
+          {
+            subreddit: "askscience",
+            author: "u/space_nerd",
+            title:
+              "Is There a Limit to How Fast We Can Go? Exploring the Speed of Light",
+            text: "A layman's explanation of special relativity and the fundamental cosmic speed limit.",
+            votes: 1987,
+            comments: 345,
+          },
+        ];
+
+        let cardIndex = 0;
+
+        function createCard(data) {
+          const card = document.createElement("div");
+          card.classList.add("bento-card");
+
+          const cardHTML = `
+                    <div class="card-header">
+                        <span class="subreddit-name">r/${data.subreddit}</span>
+                        <span>• Posted by ${data.author}</span>
+                    </div>
+                    <h3 class="card-title">${data.title}</h3>
+                    <div class="card-body">
+                        <p>${data.text}</p>
+                    </div>
+                    <div class="card-footer">
+                        <div class="votes">
+                            <button class="votes-btn upvote">▲</button>
+                            <span class="votes-count">${data.votes}</span>
+                            <button class="votes-btn downvote">▼</button>
+                        </div>
+                        <div class="comments">
+                            <span>${data.comments}</span>
+                            <span>comments</span>
+                        </div>
+                    </div>
+                `;
+          card.innerHTML = cardHTML;
+          cardGrid.appendChild(card);
+
+          // Trigger subtle fade-in animation
+          setTimeout(() => {
+            card.classList.add("show");
+          }, 50);
+        }
+
+        function loadCards(numCards) {
+          for (let i = 0; i < numCards; i++) {
+            if (cardIndex < cardData.length) {
+              createCard(cardData[cardIndex]);
+              cardIndex++;
+            } else {
+              // All cards loaded, hide the button
+              loadMoreBtn.style.display = "none";
+              break;
+            }
+          }
+        }
+
+        loadMoreBtn.addEventListener("click", () => {
+          loadCards(3); // Load 3 more cards with each click
+        });
+
+        // Dark/Light mode toggle functionality
+        darkModeToggle.addEventListener("click", () => {
+          body.classList.toggle("dark-mode");
+          if (body.classList.contains("dark-mode")) {
+            localStorage.setItem("theme", "dark");
+          } else {
+            localStorage.setItem("theme", "light");
+          }
+        });
+
+        const savedTheme = localStorage.getItem("theme");
+        if (savedTheme === "dark") {
+          body.classList.add("dark-mode");
+        }
+
+        // Initial load of cards
+        loadCards(6);
+      });
+    </script>
+  </body>
+</html>

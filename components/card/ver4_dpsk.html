@@ -1,0 +1,963 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Social Media Post Grid</title>
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+    />
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+        font-family: "Segoe UI", Roboto, Oxygen, Ubuntu, Cantarell, "Open Sans",
+          "Helvetica Neue", sans-serif;
+      }
+
+      :root {
+        --bg-primary: #f0f2f5;
+        --bg-secondary: #ffffff;
+        --text-primary: #1c1e21;
+        --text-secondary: #65676b;
+        --accent: #1877f2;
+        --accent-twitter: #1da1f2;
+        --accent-medium: #00ab6c;
+        --accent-whatsapp: #25d366;
+        --border: #e4e6eb;
+        --shadow: rgba(0, 0, 0, 0.05);
+        --card-shadow: rgba(0, 0, 0, 0.1);
+        --transition: all 0.3s ease;
+      }
+
+      body.dark-mode {
+        --bg-primary: #18191a;
+        --bg-secondary: #242526;
+        --text-primary: #e4e6eb;
+        --text-secondary: #b0b3b8;
+        --border: #3e4042;
+        --shadow: rgba(0, 0, 0, 0.2);
+        --card-shadow: rgba(0, 0, 0, 0.3);
+      }
+
+      body {
+        background-color: var(--bg-primary);
+        color: var(--text-primary);
+        transition: var(--transition);
+        min-height: 100vh;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        padding: 2rem 1rem;
+      }
+
+      .container {
+        width: 100%;
+        max-width: 1200px;
+        margin: 0 auto;
+      }
+
+      header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 2rem;
+        width: 100%;
+      }
+
+      h1 {
+        font-weight: 700;
+        font-size: 2.2rem;
+        color: var(--text-primary);
+      }
+
+      .theme-toggle {
+        background: var(--bg-secondary);
+        border: 1px solid var(--border);
+        width: 50px;
+        height: 25px;
+        border-radius: 25px;
+        cursor: pointer;
+        position: relative;
+        transition: var(--transition);
+        display: flex;
+        align-items: center;
+        padding: 0 3px;
+      }
+
+      .theme-toggle i {
+        font-size: 0.8rem;
+        transition: var(--transition);
+      }
+
+      .theme-toggle .fa-sun {
+        color: #f8d053;
+        opacity: 0;
+        transform: translateX(-15px);
+      }
+
+      .theme-toggle .fa-moon {
+        color: #6e7681;
+        opacity: 1;
+        transform: translateX(0);
+      }
+
+      body.dark-mode .theme-toggle .fa-sun {
+        opacity: 1;
+        transform: translateX(0);
+      }
+
+      body.dark-mode .theme-toggle .fa-moon {
+        opacity: 0;
+        transform: translateX(15px);
+      }
+
+      .grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+        gap: 1.5rem;
+        margin-bottom: 2rem;
+      }
+
+      .card {
+        background: var(--bg-secondary);
+        border-radius: 12px;
+        overflow: hidden;
+        transition: var(--transition);
+        box-shadow: 0 2px 4px var(--shadow);
+        animation: fadeIn 0.5s ease-out;
+        border: 1px solid var(--border);
+      }
+
+      .card:hover {
+        box-shadow: 0 8px 24px var(--card-shadow);
+        transform: translateY(-5px);
+      }
+
+      /* Facebook Style Card */
+      .facebook-card .card-header {
+        padding: 1rem;
+        display: flex;
+        align-items: center;
+        border-bottom: 1px solid var(--border);
+      }
+
+      .facebook-card .avatar {
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
+        margin-right: 0.8rem;
+        object-fit: cover;
+      }
+
+      .facebook-card .user-info {
+        flex-grow: 1;
+      }
+
+      .facebook-card .user-name {
+        font-weight: 600;
+        font-size: 0.95rem;
+      }
+
+      .facebook-card .post-time {
+        font-size: 0.8rem;
+        color: var(--text-secondary);
+      }
+
+      .facebook-card .card-body {
+        padding: 0.8rem 1rem;
+      }
+
+      .facebook-card .post-content {
+        font-size: 0.95rem;
+        margin-bottom: 0.8rem;
+        line-height: 1.4;
+      }
+
+      .facebook-card .post-image {
+        width: 100%;
+        border-radius: 8px;
+        margin-bottom: 0.8rem;
+      }
+
+      .facebook-card .card-footer {
+        padding: 0.8rem 1rem;
+        display: flex;
+        justify-content: space-around;
+        border-top: 1px solid var(--border);
+        color: var(--text-secondary);
+      }
+
+      .facebook-card .reaction {
+        display: flex;
+        align-items: center;
+        font-size: 0.9rem;
+        cursor: pointer;
+        transition: var(--transition);
+        padding: 0.3rem 0.8rem;
+        border-radius: 4px;
+      }
+
+      .facebook-card .reaction:hover {
+        background: rgba(0, 0, 0, 0.05);
+      }
+
+      .facebook-card .reaction i {
+        margin-right: 0.4rem;
+        color: var(--accent);
+      }
+
+      /* Twitter Style Card */
+      .twitter-card {
+        border-top: 4px solid var(--accent-twitter);
+      }
+
+      .twitter-card .card-header {
+        padding: 1rem 1rem 0.5rem;
+        display: flex;
+        align-items: center;
+      }
+
+      .twitter-card .avatar {
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
+        margin-right: 0.8rem;
+        object-fit: cover;
+      }
+
+      .twitter-card .user-info {
+        flex-grow: 1;
+      }
+
+      .twitter-card .user-name {
+        font-weight: 700;
+        font-size: 0.95rem;
+      }
+
+      .twitter-card .user-handle {
+        font-size: 0.8rem;
+        color: var(--text-secondary);
+      }
+
+      .twitter-card .twitter-logo {
+        color: var(--accent-twitter);
+        font-size: 1.2rem;
+      }
+
+      .twitter-card .card-body {
+        padding: 0.5rem 1rem;
+      }
+
+      .twitter-card .post-content {
+        font-size: 0.95rem;
+        margin-bottom: 0.8rem;
+        line-height: 1.4;
+      }
+
+      .twitter-card .hashtag {
+        color: var(--accent-twitter);
+      }
+
+      .twitter-card .card-footer {
+        padding: 0.8rem 1rem;
+        display: flex;
+        justify-content: space-around;
+        color: var(--text-secondary);
+      }
+
+      .twitter-card .tweet-action {
+        display: flex;
+        align-items: center;
+        font-size: 0.9rem;
+        cursor: pointer;
+        transition: var(--transition);
+        padding: 0.3rem 0.8rem;
+        border-radius: 4px;
+      }
+
+      .twitter-card .tweet-action:hover {
+        background: rgba(29, 161, 242, 0.1);
+        color: var(--accent-twitter);
+      }
+
+      .twitter-card .tweet-action i {
+        margin-right: 0.4rem;
+      }
+
+      /* Medium Style Card */
+      .medium-card {
+        border-top: 4px solid var(--accent-medium);
+      }
+
+      .medium-card .post-image {
+        width: 100%;
+        height: 160px;
+        object-fit: cover;
+      }
+
+      .medium-card .card-body {
+        padding: 1.2rem;
+      }
+
+      .medium-card .post-title {
+        font-weight: 700;
+        font-size: 1.2rem;
+        margin-bottom: 0.8rem;
+        line-height: 1.3;
+      }
+
+      .medium-card .post-content {
+        font-size: 0.95rem;
+        margin-bottom: 1.2rem;
+        line-height: 1.5;
+        color: var(--text-secondary);
+        display: -webkit-box;
+        -webkit-line-clamp: 3;
+        line-clamp: 3;
+        -webkit-box-orient: vertical;
+        overflow: hidden;
+      }
+
+      .medium-card .card-footer {
+        padding: 0 1.2rem 1.2rem;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+      }
+
+      .medium-card .author {
+        display: flex;
+        align-items: center;
+      }
+
+      .medium-card .author-avatar {
+        width: 30px;
+        height: 30px;
+        border-radius: 50%;
+        margin-right: 0.6rem;
+        object-fit: cover;
+      }
+
+      .medium-card .author-name {
+        font-size: 0.9rem;
+        font-weight: 500;
+      }
+
+      .medium-card .post-date {
+        font-size: 0.8rem;
+        color: var(--text-secondary);
+      }
+
+      .medium-card .read-time {
+        font-size: 0.8rem;
+        color: var(--text-secondary);
+      }
+
+      /* WhatsApp Style Card */
+      .whatsapp-card {
+        border-top: 4px solid var(--accent-whatsapp);
+      }
+
+      .whatsapp-card .card-header {
+        padding: 1rem;
+        display: flex;
+        align-items: center;
+        border-bottom: 1px solid var(--border);
+      }
+
+      .whatsapp-card .avatar {
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
+        margin-right: 0.8rem;
+        object-fit: cover;
+      }
+
+      .whatsapp-card .user-info {
+        flex-grow: 1;
+      }
+
+      .whatsapp-card .user-name {
+        font-weight: 600;
+        font-size: 0.95rem;
+      }
+
+      .whatsapp-card .user-status {
+        font-size: 0.8rem;
+        color: var(--text-secondary);
+      }
+
+      .whatsapp-card .whatsapp-logo {
+        color: var(--accent-whatsapp);
+        font-size: 1.5rem;
+      }
+
+      .whatsapp-card .card-body {
+        padding: 1rem;
+        background: rgba(37, 211, 102, 0.05);
+      }
+
+      .whatsapp-card .message {
+        background: var(--bg-secondary);
+        padding: 0.8rem;
+        border-radius: 8px;
+        box-shadow: 0 1px 2px var(--shadow);
+        margin-bottom: 0.8rem;
+        position: relative;
+      }
+
+      .whatsapp-card .message:after {
+        content: "";
+        position: absolute;
+        bottom: -5px;
+        left: 15px;
+        width: 10px;
+        height: 10px;
+        background: var(--bg-secondary);
+        transform: rotate(45deg);
+        box-shadow: 1px 1px 2px var(--shadow);
+      }
+
+      .whatsapp-card .message-text {
+        font-size: 0.9rem;
+        margin-bottom: 0.4rem;
+      }
+
+      .whatsapp-card .message-time {
+        font-size: 0.7rem;
+        color: var(--text-secondary);
+        text-align: right;
+      }
+
+      .whatsapp-card .card-footer {
+        padding: 0.8rem 1rem;
+        display: flex;
+        justify-content: flex-end;
+        border-top: 1px solid var(--border);
+      }
+
+      .whatsapp-card .reply-input {
+        flex-grow: 1;
+        border: 1px solid var(--border);
+        border-radius: 20px;
+        padding: 0.5rem 1rem;
+        margin-right: 0.8rem;
+        font-size: 0.9rem;
+        background: var(--bg-secondary);
+        color: var(--text-primary);
+      }
+
+      .whatsapp-card .send-button {
+        background: var(--accent-whatsapp);
+        color: white;
+        border: none;
+        width: 36px;
+        height: 36px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+      }
+
+      .load-more-container {
+        display: flex;
+        justify-content: center;
+        margin-top: 2rem;
+      }
+
+      .load-more-btn {
+        background: var(--accent);
+        color: white;
+        border: none;
+        padding: 0.8rem 1.8rem;
+        border-radius: 24px;
+        font-weight: 600;
+        cursor: pointer;
+        transition: var(--transition);
+        display: flex;
+        align-items: center;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+      }
+
+      .load-more-btn:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+      }
+
+      .load-more-btn i {
+        margin-left: 0.5rem;
+        transition: var(--transition);
+      }
+
+      .load-more-btn.loading i {
+        animation: spin 1s infinite linear;
+      }
+
+      footer {
+        margin-top: 3rem;
+        text-align: center;
+        color: var(--text-secondary);
+        font-size: 0.9rem;
+      }
+
+      @keyframes fadeIn {
+        from {
+          opacity: 0;
+          transform: translateY(10px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+
+      @keyframes spin {
+        from {
+          transform: rotate(0deg);
+        }
+        to {
+          transform: rotate(360deg);
+        }
+      }
+
+      @media (max-width: 768px) {
+        .grid {
+          grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+          gap: 1rem;
+        }
+
+        h1 {
+          font-size: 1.8rem;
+        }
+      }
+
+      @media (max-width: 480px) {
+        .grid {
+          grid-template-columns: 1fr;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <header>
+        <h1>Social Media Posts</h1>
+        <button class="theme-toggle">
+          <i class="fas fa-sun"></i>
+          <i class="fas fa-moon"></i>
+        </button>
+      </header>
+
+      <div class="grid" id="post-grid">
+        <!-- Facebook Card -->
+        <div class="card facebook-card">
+          <div class="card-header">
+            <img
+              src="https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=100&q=80"
+              alt="User Avatar"
+              class="avatar"
+            />
+            <div class="user-info">
+              <div class="user-name">Sarah Johnson</div>
+              <div class="post-time">3 hrs ago</div>
+            </div>
+          </div>
+          <div class="card-body">
+            <p class="post-content">
+              Just finished hiking the most beautiful trail! The views were
+              absolutely breathtaking. 🌄 #NatureLover #HikingAdventures
+            </p>
+            <img
+              src="https://images.unsplash.com/photo-1418065460487-3e41a6c84dc5?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=600&q=80"
+              alt="Mountain View"
+              class="post-image"
+            />
+          </div>
+          <div class="card-footer">
+            <div class="reaction"><i class="far fa-thumbs-up"></i> Like</div>
+            <div class="reaction"><i class="far fa-comment"></i> Comment</div>
+            <div class="reaction">
+              <i class="far fa-share-square"></i> Share
+            </div>
+          </div>
+        </div>
+
+        <!-- Twitter Card -->
+        <div class="card twitter-card">
+          <div class="card-header">
+            <img
+              src="https://images.unsplash.com/photo-1568602471122-7832951cc4c5?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=100&q=80"
+              alt="User Avatar"
+              class="avatar"
+            />
+            <div class="user-info">
+              <div class="user-name">Alex Rivera</div>
+              <div class="user-handle">@alexrivera</div>
+            </div>
+            <div class="twitter-logo"><i class="fab fa-twitter"></i></div>
+          </div>
+          <div class="card-body">
+            <p class="post-content">
+              Just launched my new side project! It's a tool that helps
+              developers track their learning progress. Check it out and let me
+              know what you think! <span class="hashtag">#webdev</span>
+              <span class="hashtag">#coding</span>
+            </p>
+          </div>
+          <div class="card-footer">
+            <div class="tweet-action"><i class="far fa-comment"></i> 24</div>
+            <div class="tweet-action"><i class="fas fa-retweet"></i> 18</div>
+            <div class="tweet-action"><i class="far fa-heart"></i> 67</div>
+            <div class="tweet-action"><i class="far fa-share-square"></i></div>
+          </div>
+        </div>
+
+        <!-- Medium Card -->
+        <div class="card medium-card">
+          <img
+            src="https://images.unsplash.com/photo-1555949963-aa79dcee981c?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=600&q=80"
+            alt="Article Image"
+            class="post-image"
+          />
+          <div class="card-body">
+            <h3 class="post-title">The Future of Web Development in 2023</h3>
+            <p class="post-content">
+              Exploring the latest trends and technologies that are shaping the
+              future of web development. From AI-assisted coding to Web3 and
+              beyond.
+            </p>
+          </div>
+          <div class="card-footer">
+            <div class="author">
+              <img
+                src="https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=100&q=80"
+                alt="Author Avatar"
+                class="author-avatar"
+              />
+              <div>
+                <div class="author-name">Michael Chen</div>
+                <div class="post-date">Jun 15, 2023</div>
+              </div>
+            </div>
+            <div class="read-time">5 min read</div>
+          </div>
+        </div>
+
+        <!-- WhatsApp Card -->
+        <div class="card whatsapp-card">
+          <div class="card-header">
+            <img
+              src="https://images.unsplash.com/photo-1544005313-94ddf0286df2?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=100&q=80"
+              alt="User Avatar"
+              class="avatar"
+            />
+            <div class="user-info">
+              <div class="user-name">Emma Wilson</div>
+              <div class="user-status">Online</div>
+            </div>
+            <div class="whatsapp-logo"><i class="fab fa-whatsapp"></i></div>
+          </div>
+          <div class="card-body">
+            <div class="message">
+              <p class="message-text">
+                Hey! Are we still meeting for coffee tomorrow?
+              </p>
+              <div class="message-time">10:15 AM</div>
+            </div>
+            <div class="message">
+              <p class="message-text">
+                I found a great new place downtown we could try
+              </p>
+              <div class="message-time">10:17 AM</div>
+            </div>
+          </div>
+          <div class="card-footer">
+            <input
+              type="text"
+              class="reply-input"
+              placeholder="Type a message..."
+            />
+            <button class="send-button">
+              <i class="fas fa-paper-plane"></i>
+            </button>
+          </div>
+        </div>
+
+        <!-- Additional Cards -->
+        <!-- Facebook Card 2 -->
+        <div class="card facebook-card">
+          <div class="card-header">
+            <img
+              src="https://images.unsplash.com/photo-1633332755192-727a05c4013d?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=100&q=80"
+              alt="User Avatar"
+              class="avatar"
+            />
+            <div class="user-info">
+              <div class="user-name">David Kim</div>
+              <div class="post-time">Yesterday at 14:32</div>
+            </div>
+          </div>
+          <div class="card-body">
+            <p class="post-content">
+              My team just won the regional coding competition! So proud of
+              everyone's hard work and dedication. 🏆 #coding #winning
+            </p>
+            <img
+              src="https://images.unsplash.com/photo-1550745165-9bc0b252726f?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=600&q=80"
+              alt="Coding Competition"
+              class="post-image"
+            />
+          </div>
+          <div class="card-footer">
+            <div class="reaction"><i class="far fa-thumbs-up"></i> Like</div>
+            <div class="reaction"><i class="far fa-comment"></i> Comment</div>
+            <div class="reaction">
+              <i class="far fa-share-square"></i> Share
+            </div>
+          </div>
+        </div>
+
+        <!-- Twitter Card 2 -->
+        <div class="card twitter-card">
+          <div class="card-header">
+            <img
+              src="https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=100&q=80"
+              alt="User Avatar"
+              class="avatar"
+            />
+            <div class="user-info">
+              <div class="user-name">Jessica Lee</div>
+              <div class="user-handle">@jessicatech</div>
+            </div>
+            <div class="twitter-logo"><i class="fab fa-twitter"></i></div>
+          </div>
+          <div class="card-body">
+            <p class="post-content">
+              Just published a new tutorial on building responsive layouts with
+              CSS Grid and Flexbox. Link in my bio!
+              <span class="hashtag">#webdesign</span>
+              <span class="hashtag">#CSS</span>
+              <span class="hashtag">#frontend</span>
+            </p>
+          </div>
+          <div class="card-footer">
+            <div class="tweet-action"><i class="far fa-comment"></i> 42</div>
+            <div class="tweet-action"><i class="fas fa-retweet"></i> 31</div>
+            <div class="tweet-action"><i class="far fa-heart"></i> 89</div>
+            <div class="tweet-action"><i class="far fa-share-square"></i></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="load-more-container">
+        <button class="load-more-btn" id="load-more">
+          Load More <i class="fas fa-arrow-down"></i>
+        </button>
+      </div>
+    </div>
+
+    <footer>
+      <p>Social Media Post Grid | Pure HTML, CSS & JavaScript</p>
+    </footer>
+
+    <script>
+      document.addEventListener("DOMContentLoaded", function () {
+        const themeToggle = document.querySelector(".theme-toggle");
+        const loadMoreBtn = document.querySelector("#load-more");
+        const postGrid = document.querySelector("#post-grid");
+
+        // Sample additional posts data
+        const morePosts = [
+          {
+            type: "medium",
+            title: "Understanding CSS Variables",
+            content:
+              "CSS custom properties (variables) have revolutionized how we write and maintain CSS. Here’s how to use them effectively in your projects.",
+            author: "Lisa Wong",
+            date: "Jun 12, 2023",
+            readTime: "4 min read",
+            image:
+              "https://images.unsplash.com/photo-1643330683233-ff2ac89b002c?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=600&q=80",
+          },
+          {
+            type: "whatsapp",
+            user: "Mom",
+            status: "Online",
+            messages: [
+              {
+                text: "Don't forget to come over for dinner on Sunday",
+                time: "11:30 AM",
+              },
+              { text: "I'm making your favorite dish", time: "11:31 AM" },
+            ],
+          },
+          {
+            type: "facebook",
+            user: "Tech Conference",
+            time: "2 days ago",
+            content:
+              "Only one week left until our annual developer conference! Have you registered yet? We have amazing speakers and workshops planned.",
+            image:
+              "https://images.unsplash.com/photo-1535223289827-42f1e9919769?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=600&q=80",
+          },
+          {
+            type: "twitter",
+            user: "CodeMaster",
+            handle: "@codemaster",
+            content:
+              "Just switched from REST to GraphQL in our project and the performance improvements are incredible! Highly recommend giving it a try. #graphql #api #webdev",
+          },
+        ];
+
+        let loadedPosts = 6; // Initial number of posts
+
+        // Theme toggle functionality
+        themeToggle.addEventListener("click", () => {
+          document.body.classList.toggle("dark-mode");
+
+          // Save theme preference to localStorage
+          const isDarkMode = document.body.classList.contains("dark-mode");
+          localStorage.setItem("darkMode", isDarkMode);
+        });
+
+        // Check for saved theme preference
+        if (localStorage.getItem("darkMode") === "true") {
+          document.body.classList.add("dark-mode");
+        }
+
+        // Load more functionality
+        loadMoreBtn.addEventListener("click", function () {
+          this.classList.add("loading");
+
+          // Simulate loading delay
+          setTimeout(() => {
+            // Add next set of posts
+            for (let i = 0; i < 2 && loadedPosts < morePosts.length + 6; i++) {
+              const postData = morePosts[loadedPosts - 6];
+              if (postData) {
+                addPostToGrid(postData);
+                loadedPosts++;
+              }
+            }
+
+            this.classList.remove("loading");
+
+            // Disable button if no more posts
+            if (loadedPosts >= 10) {
+              this.disabled = true;
+              this.textContent = "No more posts to load";
+              this.style.background = "#ccc";
+              this.style.cursor = "not-allowed";
+            }
+          }, 800);
+        });
+
+        // Function to add a new post to the grid
+        function addPostToGrid(postData) {
+          let postHTML = "";
+
+          if (postData.type === "facebook") {
+            postHTML = `
+                        <div class="card facebook-card">
+                            <div class="card-header">
+                                <img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=100&q=80" alt="User Avatar" class="avatar">
+                                <div class="user-info">
+                                    <div class="user-name">${postData.user}</div>
+                                    <div class="post-time">${postData.time}</div>
+                                </div>
+                            </div>
+                            <div class="card-body">
+                                <p class="post-content">${postData.content}</p>
+                                <img src="${postData.image}" alt="Post Image" class="post-image">
+                            </div>
+                            <div class="card-footer">
+                                <div class="reaction"><i class="far fa-thumbs-up"></i> Like</div>
+                                <div class="reaction"><i class="far fa-comment"></i> Comment</div>
+                                <div class="reaction"><i class="far fa-share-square"></i> Share</div>
+                            </div>
+                        </div>
+                    `;
+          } else if (postData.type === "twitter") {
+            postHTML = `
+                        <div class="card twitter-card">
+                            <div class="card-header">
+                                <img src="https://images.unsplash.com/photo-1489424731084-a5d8b219a5bb?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=100&q=80" alt="User Avatar" class="avatar">
+                                <div class="user-info">
+                                    <div class="user-name">${postData.user}</div>
+                                    <div class="user-handle">${postData.handle}</div>
+                                </div>
+                                <div class="twitter-logo"><i class="fab fa-twitter"></i></div>
+                            </div>
+                            <div class="card-body">
+                                <p class="post-content">${postData.content}</p>
+                            </div>
+                            <div class="card-footer">
+                                <div class="tweet-action"><i class="far fa-comment"></i> 18</div>
+                                <div class="tweet-action"><i class="fas fa-retweet"></i> 12</div>
+                                <div class="tweet-action"><i class="far fa-heart"></i> 35</div>
+                                <div class="tweet-action"><i class="far fa-share-square"></i></div>
+                            </div>
+                        </div>
+                    `;
+          } else if (postData.type === "medium") {
+            postHTML = `
+                        <div class="card medium-card">
+                            <img src="${postData.image}" alt="Article Image" class="post-image">
+                            <div class="card-body">
+                                <h3 class="post-title">${postData.title}</h3>
+                                <p class="post-content">${postData.content}</p>
+                            </div>
+                            <div class="card-footer">
+                                <div class="author">
+                                    <img src="https://images.unsplash.com/photo-1580489944761-15a19d654956?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=100&q=80" alt="Author Avatar" class="author-avatar">
+                                    <div>
+                                        <div class="author-name">${postData.author}</div>
+                                        <div class="post-date">${postData.date}</div>
+                                    </div>
+                                </div>
+                                <div class="read-time">${postData.readTime}</div>
+                            </div>
+                        </div>
+                    `;
+          } else if (postData.type === "whatsapp") {
+            let messagesHTML = "";
+            postData.messages.forEach((msg) => {
+              messagesHTML += `
+                            <div class="message">
+                                <p class="message-text">${msg.text}</p>
+                                <div class="message-time">${msg.time}</div>
+                            </div>
+                        `;
+            });
+
+            postHTML = `
+                        <div class="card whatsapp-card">
+                            <div class="card-header">
+                                <img src="https://images.unsplash.com/photo-1547428062-6f3f200a69c2?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=100&q=80" alt="User Avatar" class="avatar">
+                                <div class="user-info">
+                                    <div class="user-name">${postData.user}</div>
+                                    <div class="user-status">${postData.status}</div>
+                                </div>
+                                <div class="whatsapp-logo"><i class="fab fa-whatsapp"></i></div>
+                            </div>
+                            <div class="card-body">
+                                ${messagesHTML}
+                            </div>
+                            <div class="card-footer">
+                                <input type="text" class="reply-input" placeholder="Type a message...">
+                                <button class="send-button"><i class="fas fa-paper-plane"></i></button>
+                            </div>
+                        </div>
+                    `;
+          }
+
+          postGrid.innerHTML += postHTML;
+        }
+      });
+    </script>
+  </body>
+</html>
