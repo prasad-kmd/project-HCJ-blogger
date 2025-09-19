@@ -199,10 +199,23 @@ document.addEventListener("DOMContentLoaded", () => {
         mobileToggle.addEventListener("click", function () {
             mobileItems.classList.toggle("active");
             const icon = mobileToggle.querySelector("i");
+            const items = mobileItems.querySelectorAll(".dock-item");
+            const radius = 100; // The radius of the circle
+            const angleIncrement = Math.PI / (items.length - 1); // Distribute items in a semi-circle
+
             if (mobileItems.classList.contains("active")) {
                 icon.className = "fas fa-times";
+                items.forEach((item, index) => {
+                    const angle = -angleIncrement * index;
+                    const x = radius * Math.cos(angle);
+                    const y = radius * Math.sin(angle);
+                    item.style.transform = `translate(${x}px, ${y}px)`;
+                });
             } else {
                 icon.className = "fas fa-bars";
+                items.forEach((item) => {
+                    item.style.transform = "translate(0, 0)";
+                });
             }
         });
     }
