@@ -1,3 +1,4 @@
+
 # Project HCJ Blogger
 
 [![CodeQL](https://github.com/prasad-kmd/project-HCJ-blogger/actions/workflows/github-code-scanning/codeql/badge.svg)](https://github.com/prasad-kmd/project-HCJ-blogger/actions/workflows/github-code-scanning/codeql)
@@ -73,3 +74,4 @@ Please make sure your code is well-documented and follows the existing coding st
 ## License
 
 This project is licensed under the **GNU Affero General Public License v3**. See the [LICENSE](LICENSE) file for more details.
+
